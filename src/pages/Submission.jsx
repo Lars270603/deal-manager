@@ -111,7 +111,7 @@ function HistoryAccordion({ week, listings, variantsByListing, statusByListing }
         }}
       >
         {open ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
-        <span style={{ fontFamily: 'Syne', fontWeight: 700, fontSize: 14 }}>KW {week.kw} · {week.year}</span>
+        <span style={{ fontFamily: 'Playfair Display', fontWeight: 700, fontSize: 14 }}>KW {week.kw} · {week.year}</span>
         <span style={{ fontSize: 12, color: 'var(--text-secondary)' }}>
           {format(start, 'd. MMM', { locale: de })} – {format(end, 'd. MMM', { locale: de })}
         </span>
@@ -261,7 +261,7 @@ export default function Submission() {
         style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 24 }}
       >
         <div>
-          <h1 style={{ fontFamily: 'Syne', fontSize: 28, fontWeight: 800, margin: 0 }}>Einreichung</h1>
+          <h1 style={{ fontFamily: 'Playfair Display', fontSize: 28, fontWeight: 800, margin: 0 }}>Einreichung</h1>
           <p style={{ fontSize: 13, color: 'var(--text-secondary)', margin: '4px 0 0' }}>
             KW {kw} · {format(start, 'd. MMMM', { locale: de })} – {format(end, 'd. MMMM yyyy', { locale: de })}
           </p>

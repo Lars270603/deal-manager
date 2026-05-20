@@ -71,7 +71,7 @@ export default function Modal({ open, onClose, title, children, width = '600px' 
                 borderBottom: '1px solid var(--border-subtle)',
                 flexShrink: 0,
               }}>
-                <h2 style={{ fontFamily: 'Syne', fontSize: '18px', margin: 0 }}>{title}</h2>
+                <h2 style={{ fontFamily: 'Playfair Display', fontSize: '18px', margin: 0 }}>{title}</h2>
                 <button
                   onClick={onClose}
                   style={{

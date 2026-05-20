@@ -70,7 +70,7 @@ export default function Sidebar({ collapsed, onToggle }) {
               exit={{ opacity: 0, width: 0 }}
               transition={{ duration: 0.2 }}
               style={{
-                fontFamily: 'Syne, sans-serif',
+                fontFamily: 'Playfair Display, serif',
                 fontWeight: 700,
                 fontSize: 15,
                 color: 'var(--text-primary)',

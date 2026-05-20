@@ -10,10 +10,12 @@ export default function Card({ children, style = {}, onClick, hoverable = false 
       onHoverStart={() => hoverable && setHovered(true)}
       onHoverEnd={() => hoverable && setHovered(false)}
       style={{
-        background: hovered ? 'var(--bg-overlay)' : 'var(--bg-elevated)',
-        border: `1px solid ${hovered ? 'var(--border-default)' : 'var(--border-subtle)'}`,
+        background: 'var(--bg-elevated)',
         borderRadius: '12px',
-        transition: 'background 0.15s ease, border-color 0.15s ease',
+        boxShadow: hovered
+          ? '0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.05)'
+          : '0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04)',
+        transition: 'box-shadow 0.15s ease',
         cursor: onClick ? 'pointer' : 'default',
         ...style
       }}

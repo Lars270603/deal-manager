@@ -583,11 +583,13 @@ function ListingCard({ listing, variants, kw, year, onEdit, dealStatus }) {
       onMouseLeave={() => setHovered(false)}
       style={{
         background: 'var(--bg-elevated)',
-        border: `1px solid ${hovered ? 'var(--border-default)' : 'var(--border-subtle)'}`,
         borderRadius: 12,
         overflow: 'hidden',
         position: 'relative',
-        transition: 'border-color 0.15s',
+        boxShadow: hovered
+          ? '0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.05)'
+          : '0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04)',
+        transition: 'box-shadow 0.15s',
         cursor: 'default',
       }}
     >
@@ -645,7 +647,7 @@ function ListingCard({ listing, variants, kw, year, onEdit, dealStatus }) {
       <div style={{ padding: '12px 14px' }}>
         <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 6, marginBottom: 8 }}>
           <h3 style={{
-            fontFamily: 'Syne', fontSize: 14, fontWeight: 700, margin: 0,
+            fontFamily: 'Playfair Display', fontSize: 14, fontWeight: 700, margin: 0,
             color: 'var(--text-primary)', lineHeight: 1.3,
             overflow: 'hidden', display: '-webkit-box',
             WebkitLineClamp: 2, WebkitBoxOrient: 'vertical',
@@ -816,10 +818,10 @@ export default function Listings() {
         <motion.h1
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          style={{ fontFamily: 'Syne', fontSize: 28, fontWeight: 800, margin: 0 }}
+          style={{ fontFamily: 'Playfair Display', fontSize: 28, fontWeight: 800, margin: 0 }}
         >
           Listings
-          <span style={{ fontSize: 14, fontWeight: 400, color: 'var(--text-muted)', marginLeft: 10, fontFamily: 'DM Sans' }}>
+          <span style={{ fontSize: 14, fontWeight: 400, color: 'var(--text-muted)', marginLeft: 10, fontFamily: 'Inter' }}>
             {listings.length}
           </span>
         </motion.h1>
@@ -939,7 +941,7 @@ export default function Listings() {
               padding: '8px 0', borderBottom: `2px solid ${BRANDS[brand].color}33`,
             }}>
               <img src={BRANDS[brand].logo} alt={BRANDS[brand].label} style={{ width: 28, height: 28, objectFit: 'contain' }} />
-              <span style={{ fontFamily: 'Syne', fontSize: 16, fontWeight: 700, color: BRANDS[brand].color }}>
+              <span style={{ fontFamily: 'Playfair Display', fontSize: 16, fontWeight: 700, color: BRANDS[brand].color }}>
                 {BRANDS[brand].label}
               </span>
               <span style={{ fontSize: 12, color: 'var(--text-muted)', marginLeft: 4 }}>

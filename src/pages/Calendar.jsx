@@ -162,7 +162,7 @@ export default function Calendar() {
         <motion.h1
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          style={{ fontFamily: 'Syne', fontSize: 28, fontWeight: 800, margin: 0 }}
+          style={{ fontFamily: 'Playfair Display', fontSize: 28, fontWeight: 800, margin: 0 }}
         >
           Rotationskalender
         </motion.h1>
@@ -332,7 +332,7 @@ export default function Calendar() {
                               style={{ width: 20, height: 20, objectFit: 'contain' }}
                             />
                             <span style={{
-                              fontFamily: 'Syne', fontSize: 13, fontWeight: 700,
+                              fontFamily: 'Playfair Display', fontSize: 13, fontWeight: 700,
                               color: BRANDS[brand].color,
                             }}>
                               {BRANDS[brand].label}

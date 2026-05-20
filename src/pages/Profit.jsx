@@ -98,7 +98,7 @@ export default function Profit() {
       <motion.h1
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
-        style={{ fontFamily: 'Syne', fontSize: 28, fontWeight: 800, marginBottom: 24 }}
+        style={{ fontFamily: 'Playfair Display', fontSize: 28, fontWeight: 800, marginBottom: 24 }}
       >
         Gewinnübersicht
       </motion.h1>
@@ -111,13 +111,13 @@ export default function Profit() {
         style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16, marginBottom: 32 }}
       >
         <motion.div variants={cardItem} style={{ background: 'var(--bg-elevated)', border: '1px solid var(--border-subtle)', borderRadius: 12, padding: '20px 24px' }}>
-          <div style={{ fontFamily: 'Syne', fontSize: 32, fontWeight: 800, color: 'var(--accent)' }}>
+          <div style={{ fontFamily: 'Playfair Display', fontSize: 32, fontWeight: 800, color: 'var(--accent)' }}>
             {loading ? '–' : formatCurrency(avgDeal)}
           </div>
           <div style={{ fontSize: 12, color: 'var(--text-secondary)', marginTop: 6 }}>Ø Gewinn mit Deal</div>
         </motion.div>
         <motion.div variants={cardItem} style={{ background: 'var(--bg-elevated)', border: '1px solid var(--border-subtle)', borderRadius: 12, padding: '20px 24px' }}>
-          <div style={{ fontFamily: 'Syne', fontSize: 32, fontWeight: 800, color: 'var(--green)' }}>
+          <div style={{ fontFamily: 'Playfair Display', fontSize: 32, fontWeight: 800, color: 'var(--green)' }}>
             {loading || !bestRow ? '–' : formatCurrency(bestRow.profit_deal)}
           </div>
           <div style={{ fontSize: 12, color: 'var(--text-secondary)', marginTop: 6 }}>
@@ -125,7 +125,7 @@ export default function Profit() {
           </div>
         </motion.div>
         <motion.div variants={cardItem} style={{ background: 'var(--bg-elevated)', border: '1px solid var(--border-subtle)', borderRadius: 12, padding: '20px 24px' }}>
-          <div style={{ fontFamily: 'Syne', fontSize: 32, fontWeight: 800, color: 'var(--yellow)' }}>
+          <div style={{ fontFamily: 'Playfair Display', fontSize: 32, fontWeight: 800, color: 'var(--yellow)' }}>
             {loading || !bestDiff ? '–' : `+${bestDiff.diffPct != null ? bestDiff.diffPct.toFixed(0) : '?'}%`}
           </div>
           <div style={{ fontSize: 12, color: 'var(--text-secondary)', marginTop: 6 }}>

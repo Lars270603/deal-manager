@@ -32,16 +32,16 @@ function StatCard({ label, value, color, loading }) {
       variants={cardItem}
       style={{
         background: 'var(--bg-elevated)',
-        border: '1px solid var(--border-subtle)',
         borderRadius: 12,
         padding: '20px 24px',
+        boxShadow: '0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04)',
       }}
     >
       {loading ? (
         <SkeletonLoader height={44} />
       ) : (
         <>
-          <div style={{ fontFamily: 'Syne', fontWeight: 800, fontSize: 40, color, lineHeight: 1 }}>
+          <div style={{ fontFamily: 'Playfair Display', fontWeight: 800, fontSize: 40, color, lineHeight: 1 }}>
             {value}
           </div>
           <div style={{ fontSize: 12, color: 'var(--text-secondary)', marginTop: 6, fontWeight: 500 }}>
@@ -162,7 +162,7 @@ export default function Dashboard() {
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.4, ease: 'easeOut' }}
         >
-          <h1 style={{ fontFamily: 'Syne', fontWeight: 800, fontSize: 44, margin: 0, lineHeight: 1 }}>
+          <h1 style={{ fontFamily: 'Playfair Display', fontWeight: 800, fontSize: 44, margin: 0, lineHeight: 1 }}>
             {getGreeting()}
           </h1>
           <p style={{ fontSize: 15, color: 'var(--text-secondary)', margin: '10px 0 0' }}>
@@ -205,12 +205,12 @@ export default function Dashboard() {
           transition={{ delay: 0.3 }}
           style={{
             background: 'var(--bg-elevated)',
-            border: '1px solid var(--border-subtle)',
             borderRadius: 12,
             padding: 20,
+            boxShadow: '0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04)',
           }}
         >
-          <h3 style={{ fontFamily: 'Syne', fontSize: 14, fontWeight: 700, margin: '0 0 14px', color: 'var(--text-primary)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+          <h3 style={{ fontFamily: 'Playfair Display', fontSize: 14, fontWeight: 700, margin: '0 0 14px', color: 'var(--text-primary)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
             Diese Woche — KW {kw}
           </h3>
           {listingsLoading ? (
@@ -229,13 +229,13 @@ export default function Dashboard() {
           transition={{ delay: 0.4 }}
           style={{
             background: 'var(--bg-elevated)',
-            border: '1px solid var(--border-subtle)',
             borderRadius: 12,
             padding: 20,
             opacity: 0.65,
+            boxShadow: '0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04)',
           }}
         >
-          <h3 style={{ fontFamily: 'Syne', fontSize: 14, fontWeight: 700, margin: '0 0 14px', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+          <h3 style={{ fontFamily: 'Playfair Display', fontSize: 14, fontWeight: 700, margin: '0 0 14px', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
             Nächste Woche — KW {nextKW}
           </h3>
           {listingsLoading ? (

@@ -163,7 +163,7 @@ export default function WilliamView() {
         animate={{ opacity: 1, y: 0 }}
         style={{ marginBottom: 28 }}
       >
-        <h1 style={{ fontFamily: 'Syne', fontSize: 32, fontWeight: 800, margin: 0 }}>
+        <h1 style={{ fontFamily: 'Playfair Display', fontSize: 32, fontWeight: 800, margin: 0 }}>
           Ads Briefing · KW {kw}
         </h1>
         <p style={{ fontSize: 14, color: 'var(--text-secondary)', margin: '6px 0 0' }}>
@@ -215,7 +215,7 @@ export default function WilliamView() {
           transition={{ delay: 0.15 }}
         >
           <div style={{ marginBottom: 14 }}>
-            <h2 style={{ fontFamily: 'Syne', fontSize: 12, fontWeight: 700, color: 'var(--green)', textTransform: 'uppercase', letterSpacing: '0.08em', margin: 0 }}>
+            <h2 style={{ fontFamily: 'Playfair Display', fontSize: 12, fontWeight: 700, color: 'var(--green)', textTransform: 'uppercase', letterSpacing: '0.08em', margin: 0 }}>
               Diese Woche — Jetzt schalten
             </h2>
           </div>
@@ -246,7 +246,7 @@ export default function WilliamView() {
           transition={{ delay: 0.25 }}
         >
           <div style={{ marginBottom: 14 }}>
-            <h2 style={{ fontFamily: 'Syne', fontSize: 12, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em', margin: 0 }}>
+            <h2 style={{ fontFamily: 'Playfair Display', fontSize: 12, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em', margin: 0 }}>
               Nächste Woche — Vorbereiten (KW {nextKW})
             </h2>
           </div>

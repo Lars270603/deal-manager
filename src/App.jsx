@@ -63,7 +63,7 @@ function KonamiOverlay({ active }) {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
             style={{
-              fontFamily: 'Syne', fontSize: 52, fontWeight: 800,
+              fontFamily: 'Playfair Display', fontSize: 52, fontWeight: 800,
               color: 'var(--text-primary)', textAlign: 'center', lineHeight: 1.1,
             }}
           >
@@ -129,7 +129,7 @@ function AppInner() {
             border: '1px solid var(--border-default)',
             borderRadius: 10,
             fontSize: 13,
-            fontFamily: 'DM Sans, sans-serif',
+            fontFamily: 'Inter, sans-serif',
           },
           success: {
             iconTheme: { primary: 'var(--green)', secondary: 'var(--bg-overlay)' }
