@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <rect width="200" height="200" rx="16" fill="#1a1209"/>
+  <rect x="12" y="12" width="176" height="176" rx="12" fill="none" stroke="#D4A853" stroke-width="3"/>
+  <text x="100" y="90" font-family="Georgia, serif" font-size="52" font-weight="bold" fill="#D4A853" text-anchor="middle" dominant-baseline="middle">BG</text>
+  <text x="100" y="140" font-family="Georgia, serif" font-size="18" fill="#D4A853" text-anchor="middle" letter-spacing="4">BURGGRAF</text>
+</svg>
