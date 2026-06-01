@@ -32,14 +32,14 @@ export default function Sidebar({ collapsed, onToggle }) {
 
   return (
     <motion.aside
-      animate={{ width: collapsed ? 60 : 220 }}
+      animate={{ width: collapsed ? 64 : 240 }}
       transition={{ duration: 0.25, ease: 'easeInOut' }}
       style={{
         position: 'fixed',
         top: 0,
         left: 0,
         height: '100vh',
-        background: 'var(--bg-surface)',
+        background: 'var(--bg-base)',
         borderRight: '1px solid var(--border-subtle)',
         display: 'flex',
         flexDirection: 'column',
@@ -60,7 +60,7 @@ export default function Sidebar({ collapsed, onToggle }) {
         <img
           src={albatrosLogo}
           alt="Albatros"
-          style={{ width: 28, height: 28, objectFit: 'contain', flexShrink: 0 }}
+          style={{ width: 32, height: 32, objectFit: 'contain', flexShrink: 0 }}
         />
         <AnimatePresence>
           {!collapsed && (
@@ -111,9 +111,9 @@ export default function Sidebar({ collapsed, onToggle }) {
                 justifyContent: collapsed ? 'center' : 'flex-start',
                 borderRadius: 8,
                 textDecoration: 'none',
-                color: isActive ? 'var(--text-primary)' : 'var(--text-secondary)',
-                background: isActive ? 'var(--accent-muted)' : 'transparent',
-                borderLeft: isActive ? '2px solid var(--accent)' : '2px solid transparent',
+                color: isActive ? 'var(--accent)' : 'var(--text-muted)',
+                background: isActive ? 'var(--accent-subtle)' : 'transparent',
+                borderLeft: isActive ? '3px solid var(--accent)' : '3px solid transparent',
                 transition: 'all 0.15s ease',
               })}
             >
@@ -168,7 +168,7 @@ export default function Sidebar({ collapsed, onToggle }) {
               style={{
                 padding: '3px 10px',
                 background: 'var(--accent-muted)',
-                border: '1px solid rgba(91,91,214,0.3)',
+                border: '1px solid rgba(196,30,58,0.3)',
                 borderRadius: 20,
                 fontSize: 11,
                 color: 'var(--accent)',

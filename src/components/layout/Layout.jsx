@@ -11,7 +11,7 @@ export default function Layout({ children }) {
       <Sidebar collapsed={collapsed} onToggle={() => setCollapsed(c => !c)} />
 
       <motion.div
-        animate={{ marginLeft: collapsed ? 60 : 220 }}
+        animate={{ marginLeft: collapsed ? 64 : 240 }}
         transition={{ duration: 0.25, ease: 'easeInOut' }}
         style={{ flex: 1, display: 'flex', flexDirection: 'column', minHeight: '100vh', overflow: 'hidden' }}
       >

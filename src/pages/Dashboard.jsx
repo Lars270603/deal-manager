@@ -32,9 +32,9 @@ function StatCard({ label, value, color, loading }) {
       variants={cardItem}
       style={{
         background: 'var(--bg-elevated)',
-        borderRadius: 12,
+        borderRadius: 10,
         padding: '20px 24px',
-        boxShadow: '0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04)',
+        border: '1px solid var(--border-subtle)',
       }}
     >
       {loading ? (
@@ -149,7 +149,7 @@ export default function Dashboard() {
             alt=""
             style={{
               width: 140, height: 140, objectFit: 'contain',
-              filter: 'drop-shadow(0 0 24px rgba(91,91,214,0.7))',
+              filter: 'drop-shadow(0 0 24px rgba(196,30,58,0.7))',
             }}
           />
         </motion.div>
@@ -162,7 +162,7 @@ export default function Dashboard() {
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.4, ease: 'easeOut' }}
         >
-          <h1 style={{ fontFamily: 'Playfair Display', fontWeight: 800, fontSize: 44, margin: 0, lineHeight: 1 }}>
+          <h1 style={{ fontFamily: 'Playfair Display', fontWeight: 800, fontSize: 36, margin: 0, lineHeight: 1 }}>
             {getGreeting()}
           </h1>
           <p style={{ fontSize: 15, color: 'var(--text-secondary)', margin: '10px 0 0' }}>
@@ -171,9 +171,9 @@ export default function Dashboard() {
         </motion.div>
 
         <motion.div
-          initial={{ opacity: 0, scale: 0.7, y: 20 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          transition={{ delay: 0.2, type: 'spring', stiffness: 180, damping: 15 }}
+          initial={{ opacity: 0, rotate: -15, scale: 0.9 }}
+          animate={{ opacity: 1, rotate: -10, scale: 1 }}
+          transition={{ delay: 0.3, duration: 0.6, ease: 'easeOut' }}
           onClick={handleAlbatrosClick}
           title="5× klicken für eine Überraschung"
           style={{ cursor: 'pointer', userSelect: 'none' }}
@@ -181,7 +181,7 @@ export default function Dashboard() {
           <img
             src={albatrosLogo}
             alt="Albatros"
-            style={{ width: 72, height: 72, objectFit: 'contain', opacity: 0.85 }}
+            style={{ width: 120, height: 120, objectFit: 'contain', opacity: 0.15 }}
           />
         </motion.div>
       </div>
@@ -207,7 +207,7 @@ export default function Dashboard() {
             background: 'var(--bg-elevated)',
             borderRadius: 12,
             padding: 20,
-            boxShadow: '0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04)',
+            border: '1px solid var(--border-subtle)',
           }}
         >
           <h3 style={{ fontFamily: 'Playfair Display', fontSize: 14, fontWeight: 700, margin: '0 0 14px', color: 'var(--text-primary)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
@@ -232,7 +232,7 @@ export default function Dashboard() {
             borderRadius: 12,
             padding: 20,
             opacity: 0.65,
-            boxShadow: '0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04)',
+            border: '1px solid var(--border-subtle)',
           }}
         >
           <h3 style={{ fontFamily: 'Playfair Display', fontSize: 14, fontWeight: 700, margin: '0 0 14px', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>

@@ -8,7 +8,7 @@ import stahlmannLogo from '@/assets/brands/stahlmann.png'
 export const BRANDS = {
   sommertal:   { label: 'Sommertal',   color: '#F97316', logo: sommertalLogo },
   arensberger: { label: 'Arensberger', color: '#3B82F6', logo: arensbergerLogo },
-  albatros:    { label: 'Albatros',    color: '#EF4444', logo: albatrosLogo },
+  albatros:    { label: 'Albatros',    color: '#C41E3A', logo: albatrosLogo },
   ravino:      { label: 'Ravino',      color: '#A855F7', logo: ravinoLogo },
   burggraf:    { label: 'Burggraf',    color: '#D4A853', logo: burggrafLogo },
   stahlmann:   { label: 'Stahlmann',   color: '#6B7280', logo: stahlmannLogo },

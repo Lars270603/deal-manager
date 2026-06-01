@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Toaster } from 'react-hot-toast'
 import Layout from '@/components/layout/Layout'
+import SplashScreen from '@/components/SplashScreen'
 import Dashboard from '@/pages/Dashboard'
 import Listings from '@/pages/Listings'
 import Calendar from '@/pages/Calendar'
@@ -144,8 +145,18 @@ function AppInner() {
 }
 
 export default function App() {
+  const [showSplash, setShowSplash] = useState(
+    () => !sessionStorage.getItem('splash_shown')
+  )
+
+  const handleSplashDone = () => {
+    sessionStorage.setItem('splash_shown', '1')
+    setShowSplash(false)
+  }
+
   return (
     <BrowserRouter basename="/deal-manager">
+      {showSplash && <SplashScreen onExitComplete={handleSplashDone} />}
       <AppInner />
     </BrowserRouter>
   )

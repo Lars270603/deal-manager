@@ -583,12 +583,12 @@ function ListingCard({ listing, variants, kw, year, onEdit, onDelete, dealStatus
       onMouseLeave={() => setHovered(false)}
       style={{
         background: 'var(--bg-elevated)',
-        borderRadius: 12,
+        borderRadius: 10,
         overflow: 'hidden',
         position: 'relative',
-        boxShadow: hovered
-          ? '0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.05)'
-          : '0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04)',
+        border: '1px solid var(--border-subtle)',
+        borderTop: `4px solid ${brand.color}`,
+        boxShadow: hovered ? `0 0 0 1px var(--border-default), 0 4px 16px rgba(0,0,0,0.25)` : 'none',
         transition: 'box-shadow 0.15s',
         cursor: 'default',
       }}
@@ -937,7 +937,7 @@ export default function Listings() {
       {loading ? (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16 }}>
           {Array.from({ length: 9 }).map((_, i) => (
-            <div key={i} style={{ background: 'var(--bg-elevated)', borderRadius: 12, height: 200, border: '1px solid var(--border-subtle)', overflow: 'hidden' }}>
+            <div key={i} style={{ background: 'var(--bg-elevated)', borderRadius: 10, height: 200, border: '1px solid var(--border-subtle)', overflow: 'hidden' }}>
               <SkeletonLoader height={90} radius={0} />
               <div style={{ padding: 14 }}>
                 <SkeletonLoader count={3} height={14} gap={6} />

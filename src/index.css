@@ -1,28 +1,40 @@
 @import "tailwindcss";
 
 :root {
-  --bg-base:        #F8F8FC;
-  --bg-surface:     #FFFFFF;
-  --bg-elevated:    #FFFFFF;
-  --bg-overlay:     #F0F0F8;
-  --border-subtle:  #E8E8F0;
-  --border-default: #D8D8E8;
-  --border-strong:  #C0C0D8;
-  --text-primary:   #0A0A1A;
-  --text-secondary: #5A5A7A;
-  --text-muted:     #9A9AB0;
-  --accent:         #5B5BD6;
-  --accent-hover:   #4A4AC5;
-  --accent-muted:   rgba(91, 91, 214, 0.10);
-  --green:          #16A34A;
-  --green-muted:    rgba(22, 163, 74, 0.10);
-  --yellow:         #D97706;
-  --yellow-muted:   rgba(217, 119, 6, 0.10);
-  --red:            #DC2626;
-  --red-muted:      rgba(220, 38, 38, 0.10);
+  /* Backgrounds */
+  --bg-base:        #0C0C12;
+  --bg-surface:     #12121A;
+  --bg-elevated:    #18181F;
+  --bg-overlay:     #1E1E28;
+
+  /* Borders */
+  --border-subtle:  #22222E;
+  --border-default: #2E2E3E;
+  --border-strong:  #3E3E52;
+
+  /* Text */
+  --text-primary:   #F2F2F5;
+  --text-secondary: #8A8AA8;
+  --text-muted:     #484860;
+
+  /* Accent — Albatros Dunkelrot */
+  --accent:         #C41E3A;
+  --accent-hover:   #D42545;
+  --accent-muted:   rgba(196, 30, 58, 0.12);
+  --accent-subtle:  rgba(196, 30, 58, 0.06);
+
+  /* Status */
+  --green:          #22C55E;
+  --green-muted:    rgba(34, 197, 94, 0.12);
+  --yellow:         #F59E0B;
+  --yellow-muted:   rgba(245, 158, 11, 0.12);
+  --red:            #EF4444;
+  --red-muted:      rgba(239, 68, 68, 0.12);
+
+  /* Brand colors */
   --sommertal:      #F97316;
   --arensberger:    #3B82F6;
-  --albatros:       #EF4444;
+  --albatros:       #C41E3A;
   --ravino:         #A855F7;
   --burggraf:       #D4A853;
   --stahlmann:      #6B7280;
