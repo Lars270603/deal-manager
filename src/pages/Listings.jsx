@@ -563,7 +563,7 @@ function ListingModal({ open, onClose, editing, onSave }) {
 }
 
 // ─── Listing Card ───────────────────────────────────────────────────────────
-function ListingCard({ listing, variants, kw, year, onEdit, dealStatus }) {
+function ListingCard({ listing, variants, kw, year, onEdit, onDelete, dealStatus }) {
   const [hovered, setHovered] = useState(false)
   const [copiedAsin, setCopiedAsin] = useState(false)
   const brand = BRANDS[listing.brand]
@@ -622,23 +622,41 @@ function ListingCard({ listing, variants, kw, year, onEdit, dealStatus }) {
           <img src={brand.logo} alt={brand.label} style={{ width: 16, height: 16, objectFit: 'contain' }} />
           <span style={{ fontSize: 10, fontWeight: 700, color: brand.color }}>{brand.label}</span>
         </div>
-        {/* Edit button */}
+        {/* Edit + Delete buttons */}
         <AnimatePresence>
           {hovered && (
-            <motion.button
+            <motion.div
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.8 }}
-              onClick={() => onEdit(listing)}
-              style={{
-                position: 'absolute', top: 8, right: 8,
-                background: 'rgba(8,8,14,0.8)', border: '1px solid var(--border-default)',
-                borderRadius: 6, padding: 5, cursor: 'pointer', color: 'var(--text-primary)',
-                display: 'flex', alignItems: 'center',
-              }}
+              style={{ position: 'absolute', top: 8, right: 8, display: 'flex', gap: 4 }}
             >
-              <Edit2 size={13} />
-            </motion.button>
+              <button
+                onClick={e => { e.stopPropagation(); onEdit(listing) }}
+                style={{
+                  background: 'rgba(8,8,14,0.8)', border: '1px solid var(--border-default)',
+                  borderRadius: 6, padding: 5, cursor: 'pointer', color: 'var(--text-primary)',
+                  display: 'flex', alignItems: 'center',
+                }}
+              >
+                <Edit2 size={13} />
+              </button>
+              <button
+                onClick={e => {
+                  e.stopPropagation()
+                  if (window.confirm('Listing wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.')) {
+                    onDelete(listing.id)
+                  }
+                }}
+                style={{
+                  background: 'rgba(8,8,14,0.8)', border: '1px solid var(--border-default)',
+                  borderRadius: 6, padding: 5, cursor: 'pointer', color: '#ef4444',
+                  display: 'flex', alignItems: 'center',
+                }}
+              >
+                <Trash2 size={13} />
+              </button>
+            </motion.div>
           )}
         </AnimatePresence>
       </div>
@@ -737,7 +755,7 @@ export default function Listings() {
   const kw   = getCurrentKW()
   const year = getCurrentYear()
 
-  const { listings, loading, createListing, updateListing } = useListings()
+  const { listings, loading, createListing, updateListing, deleteListing } = useListings()
   const listingIds = listings.map(l => l.id)
   const { variantsByListing } = useAllVariants(listingIds)
   const { dealStatus } = useDealStatus(kw, year)
@@ -962,6 +980,7 @@ export default function Listings() {
                     kw={kw}
                     year={year}
                     onEdit={openEdit}
+                    onDelete={deleteListing}
                     dealStatus={dealStatus.find(s => s.listing_id === listing.id)}
                   />
                 </motion.div>

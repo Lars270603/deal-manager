@@ -62,16 +62,26 @@ export function useListings() {
   }
 
   const deleteListing = async (id) => {
+    let removed
+    setListings(prev => {
+      removed = prev.find(l => l.id === id)
+      return prev.filter(l => l.id !== id)
+    })
+
     const { error } = await supabase
       .from('listings')
-      .update({ is_active: false, updated_at: new Date().toISOString() })
+      .delete()
       .eq('id', id)
 
     if (error) {
+      setListings(prev =>
+        [...prev, removed].sort((a, b) =>
+          a.brand.localeCompare(b.brand) || a.name.localeCompare(b.name)
+        )
+      )
       toast.error('Fehler beim Löschen')
       throw error
     }
-    setListings(prev => prev.filter(l => l.id !== id))
     toast.success('Listing gelöscht')
   }
 
