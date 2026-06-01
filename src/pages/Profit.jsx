@@ -87,10 +87,10 @@ export default function Profit() {
     { label: 'Marke', field: null },
     { label: 'Listing', field: null },
     { label: 'Variante', field: null },
-    { label: 'Regulär', field: 'profit_regular' },
-    { label: 'Mit Deal', field: 'profit_deal' },
-    { label: 'Differenz €', field: 'diff' },
-    { label: 'Differenz %', field: 'diffPct' },
+    { label: 'Regulär', field: 'profit_regular', right: true },
+    { label: 'Mit Deal', field: 'profit_deal', right: true },
+    { label: 'Differenz €', field: 'diff', right: true },
+    { label: 'Differenz %', field: 'diffPct', right: true },
   ]
 
   return (
@@ -156,7 +156,7 @@ export default function Profit() {
                     onClick={() => col.field && toggleSort(col.field)}
                     style={{
                       padding: '12px 16px',
-                      textAlign: 'left',
+                      textAlign: col.right ? 'right' : 'left',
                       fontSize: 11,
                       fontWeight: 600,
                       color: 'var(--text-muted)',
@@ -210,16 +210,16 @@ export default function Profit() {
                       <td style={{ padding: '10px 16px', fontSize: 13, color: 'var(--text-secondary)' }}>
                         {row.variantName}
                       </td>
-                      <td style={{ padding: '10px 16px', fontSize: 13, color: 'var(--text-secondary)', fontVariantNumeric: 'tabular-nums' }}>
+                      <td style={{ padding: '10px 16px', fontSize: 13, color: 'var(--text-secondary)', fontVariantNumeric: 'tabular-nums', textAlign: 'right' }}>
                         {formatCurrency(row.profit_regular)}
                       </td>
-                      <td style={{ padding: '10px 16px', fontSize: 13, fontWeight: 600, color: 'var(--text-primary)', fontVariantNumeric: 'tabular-nums' }}>
+                      <td style={{ padding: '10px 16px', fontSize: 13, fontWeight: 600, color: 'var(--text-primary)', fontVariantNumeric: 'tabular-nums', textAlign: 'right' }}>
                         {formatCurrency(row.profit_deal)}
                       </td>
-                      <td style={{ padding: '10px 16px', fontSize: 13, fontWeight: 600, color: diffPositive ? 'var(--green)' : 'var(--red)', fontVariantNumeric: 'tabular-nums' }}>
+                      <td style={{ padding: '10px 16px', fontSize: 13, fontWeight: 600, color: diffPositive ? 'var(--green)' : 'var(--red)', fontVariantNumeric: 'tabular-nums', textAlign: 'right' }}>
                         {diffPositive ? '+' : ''}{formatCurrency(row.diff)}
                       </td>
-                      <td style={{ padding: '10px 16px', fontSize: 13, fontWeight: 600, color: diffPositive ? 'var(--green)' : 'var(--red)' }}>
+                      <td style={{ padding: '10px 16px', fontSize: 13, fontWeight: 600, color: diffPositive ? 'var(--green)' : 'var(--red)', textAlign: 'right' }}>
                         {row.diffPct != null
                           ? `${diffPositive ? '+' : ''}${row.diffPct.toFixed(1)}%`
                           : '–'}

@@ -163,7 +163,7 @@ export default function WilliamView() {
         animate={{ opacity: 1, y: 0 }}
         style={{ marginBottom: 28 }}
       >
-        <h1 style={{ fontFamily: 'Playfair Display', fontSize: 32, fontWeight: 800, margin: 0 }}>
+        <h1 style={{ fontFamily: 'Georgia, serif', fontSize: 28, fontWeight: 700, margin: 0 }}>
           Ads Briefing · KW {kw}
         </h1>
         <p style={{ fontSize: 14, color: 'var(--text-secondary)', margin: '6px 0 0' }}>
@@ -200,7 +200,7 @@ export default function WilliamView() {
             <motion.div
               animate={{ width: total > 0 ? `${(adsActive / total) * 100}%` : '0%' }}
               transition={{ duration: 0.4, ease: 'easeOut' }}
-              style={{ height: '100%', background: 'var(--green)', borderRadius: 3 }}
+              style={{ height: '100%', background: allDone ? 'var(--green)' : 'var(--accent)', borderRadius: 3 }}
             />
           </div>
         </div>

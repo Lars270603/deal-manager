@@ -169,6 +169,7 @@ export default function Submission() {
   const [submitLoading, setSubmitLoading] = useState({})
   const [historyData, setHistoryData] = useState({})
   const [historyLoaded, setHistoryLoaded] = useState(false)
+  const [hoveredRow, setHoveredRow] = useState(null)
 
   const kw   = getCurrentKW()
   const year = getCurrentYear()
@@ -336,7 +337,7 @@ export default function Submission() {
                     <tr><td colSpan={5} style={{ padding: 32, textAlign: 'center', color: 'var(--text-muted)', fontSize: 14 }}>
                       Keine aktiven Deals diese Woche
                     </td></tr>
-                  ) : activeEntries.map(({ listing, active }) => {
+                  ) : activeEntries.map(({ listing, active }, rowIndex) => {
                     const asin = typeof active === 'object' ? active.asin : listing.main_asin
                     const variantId = typeof active === 'object' ? active.id : null
                     const status = dealStatus.find(s => s.listing_id === listing.id)
@@ -345,10 +346,16 @@ export default function Submission() {
                     return (
                       <tr
                         key={listing.id}
+                        onMouseEnter={() => setHoveredRow(listing.id)}
+                        onMouseLeave={() => setHoveredRow(null)}
                         style={{
                           borderBottom: '1px solid var(--border-subtle)',
-                          background: isSubmitted ? 'rgba(34,197,94,0.03)' : 'transparent',
-                          transition: 'background 0.2s',
+                          background: hoveredRow === listing.id
+                            ? 'rgba(196,30,58,0.04)'
+                            : isSubmitted
+                              ? 'rgba(34,197,94,0.03)'
+                              : rowIndex % 2 === 1 ? 'rgba(255,255,255,0.02)' : 'transparent',
+                          transition: 'background 0.15s',
                         }}
                       >
                         <td style={{ padding: '10px 16px' }}>

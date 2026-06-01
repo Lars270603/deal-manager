@@ -1,37 +1,26 @@
 @import "tailwindcss";
 
 :root {
-  /* Backgrounds */
   --bg-base:        #0C0C12;
-  --bg-surface:     #12121A;
-  --bg-elevated:    #18181F;
-  --bg-overlay:     #1E1E28;
-
-  /* Borders */
-  --border-subtle:  #22222E;
+  --bg-surface:     #0F0F18;
+  --bg-elevated:    #12121A;
+  --bg-overlay:     #1A1A25;
+  --border-subtle:  #1A1A25;
   --border-default: #2E2E3E;
   --border-strong:  #3E3E52;
-
-  /* Text */
-  --text-primary:   #F2F2F5;
-  --text-secondary: #8A8AA8;
-  --text-muted:     #484860;
-
-  /* Accent — Albatros Dunkelrot */
+  --text-primary:   #FFFFFF;
+  --text-secondary: #D0D0E0;
+  --text-muted:     #6B6B8A;
   --accent:         #C41E3A;
   --accent-hover:   #D42545;
   --accent-muted:   rgba(196, 30, 58, 0.12);
   --accent-subtle:  rgba(196, 30, 58, 0.06);
-
-  /* Status */
   --green:          #22C55E;
   --green-muted:    rgba(34, 197, 94, 0.12);
   --yellow:         #F59E0B;
   --yellow-muted:   rgba(245, 158, 11, 0.12);
   --red:            #EF4444;
   --red-muted:      rgba(239, 68, 68, 0.12);
-
-  /* Brand colors */
   --sommertal:      #F97316;
   --arensberger:    #3B82F6;
   --albatros:       #C41E3A;
@@ -61,40 +50,18 @@ body {
 }
 
 h1, h2, h3, h4, h5, h6 {
-  font-family: 'Playfair Display', serif;
   font-weight: 700;
   color: var(--text-primary);
 }
 
-/* Custom Scrollbars */
-::-webkit-scrollbar {
-  width: 4px;
-  height: 4px;
-}
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-::-webkit-scrollbar-thumb {
-  background: var(--border-strong);
-  border-radius: 2px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: var(--text-muted);
-}
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
 
-/* Input resets */
-input, textarea, select, button {
-  font-family: inherit;
-  font-size: inherit;
-}
+input, textarea, select, button { font-family: inherit; font-size: inherit; }
 
 input[type=number]::-webkit-inner-spin-button,
-input[type=number]::-webkit-outer-spin-button {
-  -webkit-appearance: none;
-}
+input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; }
 
-/* Focus styles */
-:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
-}
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }

@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { NavLink } from 'react-router-dom'
 import {
@@ -16,31 +17,22 @@ const navItems = [
   { to: '/profit',     icon: TrendingUp,      label: 'Gewinn' },
 ]
 
-const containerVariants = {
-  hidden: {},
-  visible: { transition: { staggerChildren: 0.06, delayChildren: 0.15 } }
-}
-
-const itemVariants = {
-  hidden:   { opacity: 0, x: -16 },
-  visible:  { opacity: 1, x: 0, transition: { duration: 0.28, ease: 'easeOut' } }
-}
-
 export default function Sidebar({ collapsed, onToggle }) {
   const kw   = getCurrentKW()
   const year = getCurrentYear()
+  const [hoveredItem, setHoveredItem] = useState(null)
 
   return (
     <motion.aside
-      animate={{ width: collapsed ? 64 : 240 }}
-      transition={{ duration: 0.25, ease: 'easeInOut' }}
+      animate={{ width: collapsed ? 64 : 220 }}
+      transition={{ duration: 0.22, ease: 'easeInOut' }}
       style={{
         position: 'fixed',
         top: 0,
         left: 0,
         height: '100vh',
-        background: 'var(--bg-base)',
-        borderRight: '1px solid var(--border-subtle)',
+        background: '#08080D',
+        borderRight: '1px solid #1A1A25',
         display: 'flex',
         flexDirection: 'column',
         zIndex: 100,
@@ -51,10 +43,10 @@ export default function Sidebar({ collapsed, onToggle }) {
       <div style={{
         display: 'flex',
         alignItems: 'center',
-        padding: '0 16px',
+        padding: '0 14px',
         gap: 10,
         height: 60,
-        borderBottom: '1px solid var(--border-subtle)',
+        borderBottom: '1px solid #1A1A25',
         flexShrink: 0,
       }}>
         <img
@@ -64,42 +56,39 @@ export default function Sidebar({ collapsed, onToggle }) {
         />
         <AnimatePresence>
           {!collapsed && (
-            <motion.span
+            <motion.div
               initial={{ opacity: 0, width: 0 }}
               animate={{ opacity: 1, width: 'auto' }}
               exit={{ opacity: 0, width: 0 }}
-              transition={{ duration: 0.2 }}
-              style={{
-                fontFamily: 'Playfair Display, serif',
-                fontWeight: 700,
-                fontSize: 15,
-                color: 'var(--text-primary)',
-                whiteSpace: 'nowrap',
-                overflow: 'hidden',
-              }}
+              transition={{ duration: 0.18 }}
+              style={{ overflow: 'hidden', whiteSpace: 'nowrap' }}
             >
-              Deal Manager
-            </motion.span>
+              <div style={{ fontFamily: 'Georgia, serif', fontWeight: 700, fontSize: 13, color: '#F2F2F5', lineHeight: 1.2 }}>
+                Deal Manager
+              </div>
+              <div style={{ fontSize: 10, color: '#6B6B8A', lineHeight: 1.2, marginTop: 1 }}>
+                Albatros Int.
+              </div>
+            </motion.div>
           )}
         </AnimatePresence>
       </div>
 
       {/* Nav */}
-      <motion.nav
-        variants={containerVariants}
-        initial="hidden"
-        animate="visible"
-        style={{
-          flex: 1,
-          padding: '10px 6px',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: 2,
-          overflowY: 'auto',
-        }}
-      >
+      <nav style={{
+        flex: 1,
+        padding: '8px 6px',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 1,
+        overflowY: 'auto',
+      }}>
         {navItems.map(({ to, icon: Icon, label, end }) => (
-          <motion.div key={to} variants={itemVariants}>
+          <div
+            key={to}
+            onMouseEnter={() => setHoveredItem(to)}
+            onMouseLeave={() => setHoveredItem(null)}
+          >
             <NavLink
               to={to}
               end={end}
@@ -109,33 +98,31 @@ export default function Sidebar({ collapsed, onToggle }) {
                 gap: 10,
                 padding: collapsed ? '10px 0' : '9px 10px',
                 justifyContent: collapsed ? 'center' : 'flex-start',
-                borderRadius: 8,
+                borderRadius: 7,
                 textDecoration: 'none',
-                color: isActive ? 'var(--accent)' : 'var(--text-muted)',
-                background: isActive ? 'var(--accent-subtle)' : 'transparent',
-                borderLeft: isActive ? '3px solid var(--accent)' : '3px solid transparent',
-                transition: 'all 0.15s ease',
+                color: isActive ? '#C41E3A' : hoveredItem === to ? '#D0D0E0' : '#A0A0C0',
+                background: isActive
+                  ? 'rgba(196,30,58,0.08)'
+                  : hoveredItem === to ? 'rgba(255,255,255,0.04)' : 'transparent',
+                borderLeft: isActive ? '3px solid #C41E3A' : '3px solid transparent',
+                transition: 'color 0.15s, background 0.15s',
               })}
             >
               {({ isActive }) => (
                 <>
-                  <motion.div
-                    whileHover={{ x: collapsed ? 0 : 2 }}
-                    transition={{ duration: 0.15 }}
-                    style={{ display: 'flex', alignItems: 'center', flexShrink: 0 }}
-                  >
+                  <div style={{ display: 'flex', alignItems: 'center', flexShrink: 0 }}>
                     <Icon
-                      size={18}
-                      style={{ color: isActive ? 'var(--accent)' : 'inherit' }}
+                      size={17}
+                      style={{ color: isActive ? '#C41E3A' : hoveredItem === to ? '#D0D0E0' : '#A0A0C0', transition: 'color 0.15s' }}
                     />
-                  </motion.div>
+                  </div>
                   <AnimatePresence>
                     {!collapsed && (
                       <motion.span
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        transition={{ duration: 0.15 }}
+                        transition={{ duration: 0.12 }}
                         style={{ fontSize: 13, fontWeight: 500, whiteSpace: 'nowrap' }}
                       >
                         {label}
@@ -145,14 +132,14 @@ export default function Sidebar({ collapsed, onToggle }) {
                 </>
               )}
             </NavLink>
-          </motion.div>
+          </div>
         ))}
-      </motion.nav>
+      </nav>
 
       {/* Footer */}
       <div style={{
-        padding: '12px 8px',
-        borderTop: '1px solid var(--border-subtle)',
+        padding: '10px 8px',
+        borderTop: '1px solid #1A1A25',
         display: 'flex',
         alignItems: 'center',
         justifyContent: collapsed ? 'center' : 'space-between',
@@ -167,11 +154,11 @@ export default function Sidebar({ collapsed, onToggle }) {
               exit={{ opacity: 0 }}
               style={{
                 padding: '3px 10px',
-                background: 'var(--accent-muted)',
-                border: '1px solid rgba(196,30,58,0.3)',
+                background: 'rgba(196,30,58,0.1)',
+                border: '1px solid rgba(196,30,58,0.2)',
                 borderRadius: 20,
                 fontSize: 11,
-                color: 'var(--accent)',
+                color: '#C41E3A',
                 fontWeight: 600,
                 whiteSpace: 'nowrap',
               }}
@@ -187,14 +174,14 @@ export default function Sidebar({ collapsed, onToggle }) {
             background: 'transparent',
             border: 'none',
             cursor: 'pointer',
-            color: 'var(--text-muted)',
+            color: '#6B6B8A',
             display: 'flex',
             alignItems: 'center',
             padding: 4,
             borderRadius: 4,
           }}
         >
-          <motion.div animate={{ rotate: collapsed ? 180 : 0 }} transition={{ duration: 0.25 }}>
+          <motion.div animate={{ rotate: collapsed ? 180 : 0 }} transition={{ duration: 0.22 }}>
             <ChevronLeft size={15} />
           </motion.div>
         </button>

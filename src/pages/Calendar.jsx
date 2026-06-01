@@ -56,9 +56,10 @@ function CalCell({ listing, week, active, status, onToggle, isCurrentKW }) {
   const asin = isVariantObj ? active.asin : listing.main_asin
   const profitDeal = isVariantObj ? active.profit_deal : null
 
+  const brandColor = BRANDS[listing.brand]?.color || '#22C55E'
   const cellBg = isActive
-    ? 'rgba(34,197,94,0.08)'
-    : 'transparent'
+    ? `${brandColor}26`
+    : 'rgba(255,255,255,0.02)'
 
   const handleToggle = (e) => {
     e.stopPropagation()
@@ -78,7 +79,7 @@ function CalCell({ listing, week, active, status, onToggle, isCurrentKW }) {
         height: 42,
         padding: '4px 6px',
         background: isCurrentKW
-          ? (isActive ? 'rgba(91,91,214,0.1)' : 'rgba(91,91,214,0.04)')
+          ? (isActive ? `${brandColor}26` : 'rgba(196,30,58,0.04)')
           : cellBg,
         borderRight: '1px solid var(--border-subtle)',
         borderBottom: '1px solid var(--border-subtle)',
@@ -216,7 +217,7 @@ export default function Calendar() {
         {[
           { bg: 'rgba(34,197,94,0.08)', border: 'rgba(34,197,94,0.2)', color: 'var(--green)', label: 'Aktiv' },
           { bg: 'transparent', border: 'var(--border-subtle)', color: 'var(--text-muted)', label: 'Pause' },
-          { bg: 'rgba(91,91,214,0.1)', border: 'rgba(91,91,214,0.2)', color: 'var(--accent)', label: 'Aktuelle KW' },
+          { bg: 'rgba(196,30,58,0.08)', border: 'rgba(196,30,58,0.2)', color: 'var(--accent)', label: 'Aktuelle KW' },
         ].map(item => (
           <div key={item.label} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
             <div style={{ width: 20, height: 12, background: item.bg, border: `1px solid ${item.border}`, borderRadius: 3 }} />
@@ -276,7 +277,7 @@ export default function Calendar() {
                         transition={{ delay: i * 0.03, duration: 0.25 }}
                         style={{
                           width: 90, minWidth: 90,
-                          background: isCurrentKW ? 'rgba(91,91,214,0.12)' : 'var(--bg-surface)',
+                          background: isCurrentKW ? 'rgba(196,30,58,0.08)' : 'var(--bg-surface)',
                           borderRight: '1px solid var(--border-subtle)',
                           borderBottom: '1px solid var(--border-default)',
                           borderTop: isCurrentKW ? '2px solid var(--accent)' : '2px solid transparent',

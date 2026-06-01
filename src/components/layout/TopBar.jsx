@@ -22,40 +22,39 @@ export default function TopBar() {
 
   return (
     <div style={{
-      height: 56,
-      borderBottom: '1px solid var(--border-subtle)',
+      height: 54,
+      borderBottom: '1px solid #1A1A25',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'space-between',
       padding: '0 28px',
-      background: 'var(--bg-surface)',
+      background: '#0F0F18',
       flexShrink: 0,
-      boxShadow: '0 1px 0 var(--border-subtle)',
     }}>
       <span style={{
-        fontFamily: 'Playfair Display, serif',
-        fontSize: 18,
+        fontFamily: 'Georgia, serif',
+        fontSize: 17,
         fontWeight: 700,
-        color: 'var(--text-primary)',
+        color: '#FFFFFF',
+        letterSpacing: '0.01em',
       }}>
         {pageName}
       </span>
 
-      <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-        <span style={{
-          fontSize: 12,
-          color: 'var(--text-secondary)',
-          fontWeight: 500,
-          letterSpacing: '0.04em',
-        }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+        <span style={{ fontSize: 12, color: '#6B6B8A' }}>
           {format(start, 'd. MMMM', { locale: de })} – {format(end, 'd. MMMM yyyy', { locale: de })}
         </span>
-        <span style={{ width: 1, height: 14, background: 'var(--border-default)' }} />
+        <span style={{ width: 1, height: 14, background: '#2E2E3E' }} />
         <span style={{
-          fontSize: 12,
-          color: 'var(--accent)',
-          fontWeight: 600,
-          letterSpacing: '0.05em',
+          fontSize: 11,
+          fontWeight: 700,
+          color: '#C41E3A',
+          background: 'rgba(196,30,58,0.1)',
+          padding: '3px 9px',
+          borderRadius: 20,
+          border: '1px solid rgba(196,30,58,0.2)',
+          letterSpacing: '0.04em',
         }}>
           KW {kw}
         </span>

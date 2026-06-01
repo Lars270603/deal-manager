@@ -665,8 +665,8 @@ function ListingCard({ listing, variants, kw, year, onEdit, onDelete, dealStatus
       <div style={{ padding: '12px 14px' }}>
         <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 6, marginBottom: 8 }}>
           <h3 style={{
-            fontFamily: 'Playfair Display', fontSize: 14, fontWeight: 700, margin: 0,
-            color: 'var(--text-primary)', lineHeight: 1.3,
+            fontFamily: 'Playfair Display', fontSize: 14, fontWeight: 600, margin: 0,
+            color: '#FFFFFF', lineHeight: 1.3,
             overflow: 'hidden', display: '-webkit-box',
             WebkitLineClamp: 2, WebkitBoxOrient: 'vertical',
           }}>
@@ -703,9 +703,9 @@ function ListingCard({ listing, variants, kw, year, onEdit, onDelete, dealStatus
                   fontSize: 11,
                   padding: '2px 8px',
                   borderRadius: 20,
-                  background: (typeof active === 'object' && active.id === v.id) ? 'var(--green-muted)' : 'var(--bg-overlay)',
-                  border: `1px solid ${(typeof active === 'object' && active.id === v.id) ? 'rgba(34,197,94,0.25)' : 'var(--border-subtle)'}`,
-                  color: (typeof active === 'object' && active.id === v.id) ? 'var(--green)' : 'var(--text-secondary)',
+                  background: (typeof active === 'object' && active.id === v.id) ? 'var(--green-muted)' : `${brand.color}15`,
+                  border: `1px solid ${(typeof active === 'object' && active.id === v.id) ? 'rgba(34,197,94,0.25)' : `${brand.color}30`}`,
+                  color: (typeof active === 'object' && active.id === v.id) ? 'var(--green)' : brand.color,
                 }}
               >
                 {v.name}
