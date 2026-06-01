@@ -59,7 +59,7 @@ function CalCell({ listing, week, active, status, onToggle, isCurrentKW }) {
   const brandColor = BRANDS[listing.brand]?.color || '#22C55E'
   const cellBg = isActive
     ? `${brandColor}26`
-    : 'rgba(255,255,255,0.02)'
+    : '#F5F5F7'
 
   const handleToggle = (e) => {
     e.stopPropagation()
@@ -79,7 +79,7 @@ function CalCell({ listing, week, active, status, onToggle, isCurrentKW }) {
         height: 42,
         padding: '4px 6px',
         background: isCurrentKW
-          ? (isActive ? `${brandColor}26` : 'rgba(196,30,58,0.04)')
+          ? (isActive ? `${brandColor}26` : 'rgba(196,30,58,0.02)')
           : cellBg,
         borderRight: '1px solid var(--border-subtle)',
         borderBottom: '1px solid var(--border-subtle)',
@@ -215,8 +215,8 @@ export default function Calendar() {
       {/* Legend */}
       <div style={{ display: 'flex', gap: 16, marginBottom: 16, flexWrap: 'wrap' }}>
         {[
-          { bg: 'rgba(34,197,94,0.08)', border: 'rgba(34,197,94,0.2)', color: 'var(--green)', label: 'Aktiv' },
-          { bg: 'transparent', border: 'var(--border-subtle)', color: 'var(--text-muted)', label: 'Pause' },
+          { bg: 'rgba(22,163,74,0.08)', border: 'rgba(22,163,74,0.2)', color: 'var(--green)', label: 'Aktiv' },
+          { bg: '#F5F5F7', border: 'var(--border-subtle)', color: 'var(--text-muted)', label: 'Pause' },
           { bg: 'rgba(196,30,58,0.08)', border: 'rgba(196,30,58,0.2)', color: 'var(--accent)', label: 'Aktuelle KW' },
         ].map(item => (
           <div key={item.label} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>

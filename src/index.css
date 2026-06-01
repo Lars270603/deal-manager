@@ -1,32 +1,32 @@
 @import "tailwindcss";
 
 :root {
-  --bg-base:        #0C0C12;
-  --bg-surface:     #0F0F18;
-  --bg-elevated:    #12121A;
-  --bg-overlay:     #1A1A25;
-  --border-subtle:  #1A1A25;
-  --border-default: #2E2E3E;
-  --border-strong:  #3E3E52;
-  --text-primary:   #FFFFFF;
-  --text-secondary: #D0D0E0;
-  --text-muted:     #6B6B8A;
+  --bg-base:        #F5F5F7;
+  --bg-surface:     #FFFFFF;
+  --bg-elevated:    #FFFFFF;
+  --bg-overlay:     #F0F0F5;
+  --border-subtle:  #E8E8EE;
+  --border-default: #D8D8E2;
+  --border-strong:  #C0C0CC;
+  --text-primary:   #0A0A14;
+  --text-secondary: #4A4A6A;
+  --text-muted:     #9090A8;
   --accent:         #C41E3A;
-  --accent-hover:   #D42545;
-  --accent-muted:   rgba(196, 30, 58, 0.12);
-  --accent-subtle:  rgba(196, 30, 58, 0.06);
-  --green:          #22C55E;
-  --green-muted:    rgba(34, 197, 94, 0.12);
-  --yellow:         #F59E0B;
-  --yellow-muted:   rgba(245, 158, 11, 0.12);
-  --red:            #EF4444;
-  --red-muted:      rgba(239, 68, 68, 0.12);
-  --sommertal:      #F97316;
-  --arensberger:    #3B82F6;
+  --accent-hover:   #A8192F;
+  --accent-muted:   rgba(196, 30, 58, 0.08);
+  --accent-subtle:  rgba(196, 30, 58, 0.04);
+  --green:          #16A34A;
+  --green-muted:    rgba(22, 163, 74, 0.08);
+  --yellow:         #D97706;
+  --yellow-muted:   rgba(217, 119, 6, 0.08);
+  --red:            #DC2626;
+  --red-muted:      rgba(220, 38, 38, 0.08);
+  --sommertal:      #EA6C00;
+  --arensberger:    #1D6FD8;
   --albatros:       #C41E3A;
-  --ravino:         #A855F7;
-  --burggraf:       #D4A853;
-  --stahlmann:      #6B7280;
+  --ravino:         #7C3AED;
+  --burggraf:       #B8860B;
+  --stahlmann:      #4B5563;
 }
 
 *, *::before, *::after {

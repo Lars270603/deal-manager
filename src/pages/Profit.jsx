@@ -31,6 +31,7 @@ export default function Profit() {
 
   const [sortField, setSortField] = useState('profit_deal')
   const [sortDir,   setSortDir]   = useState('desc')
+  const [hoveredRow, setHoveredRow] = useState(null)
 
   const loading = listingsLoading || variantsLoading
 
@@ -197,7 +198,13 @@ export default function Profit() {
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       transition={{ delay: i * 0.02 }}
-                      style={{ borderBottom: '1px solid var(--border-subtle)' }}
+                      onMouseEnter={() => setHoveredRow(row.id)}
+                      onMouseLeave={() => setHoveredRow(null)}
+                      style={{
+                        borderBottom: '1px solid var(--border-subtle)',
+                        background: hoveredRow === row.id ? 'rgba(196,30,58,0.02)' : i % 2 === 1 ? '#F9F9FB' : '#FFFFFF',
+                        transition: 'background 0.12s',
+                      }}
                     >
                       <td style={{ padding: '10px 16px' }}>
                         <BrandLogo brand={row.brand} size={24} />

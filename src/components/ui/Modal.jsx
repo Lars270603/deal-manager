@@ -24,7 +24,7 @@ export default function Modal({ open, onClose, title, children, width = '600px' 
             style={{
               position: 'fixed',
               inset: 0,
-              background: 'rgba(0,0,0,0.75)',
+              background: 'rgba(0,0,0,0.4)',
               backdropFilter: 'blur(4px)',
               zIndex: 1000,
             }}
@@ -60,6 +60,7 @@ export default function Modal({ open, onClose, title, children, width = '600px' 
                 flexDirection: 'column',
                 overflow: 'hidden',
                 pointerEvents: 'auto',
+                boxShadow: '0 20px 60px rgba(0,0,0,0.15)',
               }}
             >
               {/* Header */}
@@ -71,7 +72,7 @@ export default function Modal({ open, onClose, title, children, width = '600px' 
                 borderBottom: '1px solid var(--border-subtle)',
                 flexShrink: 0,
               }}>
-                <h2 style={{ fontFamily: 'Playfair Display', fontSize: '18px', margin: 0 }}>{title}</h2>
+                <h2 style={{ fontFamily: 'Georgia, serif', fontSize: '18px', margin: 0 }}>{title}</h2>
                 <button
                   onClick={onClose}
                   style={{

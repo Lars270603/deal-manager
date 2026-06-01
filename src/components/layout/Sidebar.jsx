@@ -31,8 +31,8 @@ export default function Sidebar({ collapsed, onToggle }) {
         top: 0,
         left: 0,
         height: '100vh',
-        background: '#08080D',
-        borderRight: '1px solid #1A1A25',
+        background: '#FFFFFF',
+        borderRight: '1px solid #E8E8EE',
         display: 'flex',
         flexDirection: 'column',
         zIndex: 100,
@@ -46,7 +46,7 @@ export default function Sidebar({ collapsed, onToggle }) {
         padding: '0 14px',
         gap: 10,
         height: 60,
-        borderBottom: '1px solid #1A1A25',
+        borderBottom: '1px solid #E8E8EE',
         flexShrink: 0,
       }}>
         <img
@@ -63,10 +63,10 @@ export default function Sidebar({ collapsed, onToggle }) {
               transition={{ duration: 0.18 }}
               style={{ overflow: 'hidden', whiteSpace: 'nowrap' }}
             >
-              <div style={{ fontFamily: 'Georgia, serif', fontWeight: 700, fontSize: 13, color: '#F2F2F5', lineHeight: 1.2 }}>
+              <div style={{ fontFamily: 'Georgia, serif', fontWeight: 700, fontSize: 13, color: '#0A0A14', lineHeight: 1.2 }}>
                 Deal Manager
               </div>
-              <div style={{ fontSize: 10, color: '#6B6B8A', lineHeight: 1.2, marginTop: 1 }}>
+              <div style={{ fontSize: 10, color: '#9090A8', lineHeight: 1.2, marginTop: 1 }}>
                 Albatros Int.
               </div>
             </motion.div>
@@ -100,10 +100,10 @@ export default function Sidebar({ collapsed, onToggle }) {
                 justifyContent: collapsed ? 'center' : 'flex-start',
                 borderRadius: 7,
                 textDecoration: 'none',
-                color: isActive ? '#C41E3A' : hoveredItem === to ? '#D0D0E0' : '#A0A0C0',
+                color: isActive ? '#C41E3A' : hoveredItem === to ? '#0A0A14' : '#4A4A6A',
                 background: isActive
-                  ? 'rgba(196,30,58,0.08)'
-                  : hoveredItem === to ? 'rgba(255,255,255,0.04)' : 'transparent',
+                  ? 'rgba(196,30,58,0.06)'
+                  : hoveredItem === to ? '#F5F5F7' : 'transparent',
                 borderLeft: isActive ? '3px solid #C41E3A' : '3px solid transparent',
                 transition: 'color 0.15s, background 0.15s',
               })}
@@ -113,7 +113,7 @@ export default function Sidebar({ collapsed, onToggle }) {
                   <div style={{ display: 'flex', alignItems: 'center', flexShrink: 0 }}>
                     <Icon
                       size={17}
-                      style={{ color: isActive ? '#C41E3A' : hoveredItem === to ? '#D0D0E0' : '#A0A0C0', transition: 'color 0.15s' }}
+                      style={{ color: isActive ? '#C41E3A' : hoveredItem === to ? '#0A0A14' : '#4A4A6A', transition: 'color 0.15s' }}
                     />
                   </div>
                   <AnimatePresence>
@@ -139,7 +139,7 @@ export default function Sidebar({ collapsed, onToggle }) {
       {/* Footer */}
       <div style={{
         padding: '10px 8px',
-        borderTop: '1px solid #1A1A25',
+        borderTop: '1px solid #E8E8EE',
         display: 'flex',
         alignItems: 'center',
         justifyContent: collapsed ? 'center' : 'space-between',
@@ -154,8 +154,8 @@ export default function Sidebar({ collapsed, onToggle }) {
               exit={{ opacity: 0 }}
               style={{
                 padding: '3px 10px',
-                background: 'rgba(196,30,58,0.1)',
-                border: '1px solid rgba(196,30,58,0.2)',
+                background: 'rgba(196,30,58,0.08)',
+                border: '1px solid rgba(196,30,58,0.15)',
                 borderRadius: 20,
                 fontSize: 11,
                 color: '#C41E3A',
@@ -174,7 +174,7 @@ export default function Sidebar({ collapsed, onToggle }) {
             background: 'transparent',
             border: 'none',
             cursor: 'pointer',
-            color: '#6B6B8A',
+            color: '#9090A8',
             display: 'flex',
             alignItems: 'center',
             padding: 4,

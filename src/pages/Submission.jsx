@@ -351,10 +351,10 @@ export default function Submission() {
                         style={{
                           borderBottom: '1px solid var(--border-subtle)',
                           background: hoveredRow === listing.id
-                            ? 'rgba(196,30,58,0.04)'
+                            ? 'rgba(196,30,58,0.02)'
                             : isSubmitted
                               ? 'rgba(34,197,94,0.03)'
-                              : rowIndex % 2 === 1 ? 'rgba(255,255,255,0.02)' : 'transparent',
+                              : rowIndex % 2 === 1 ? '#F9F9FB' : '#FFFFFF',
                           transition: 'background 0.15s',
                         }}
                       >

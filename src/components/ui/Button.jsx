@@ -40,6 +40,7 @@ export default function Button({
     primary: {
       background: 'var(--accent)',
       color: '#fff',
+      boxShadow: '0 1px 2px rgba(196,30,58,0.3)',
     },
     ghost: {
       background: 'transparent',
