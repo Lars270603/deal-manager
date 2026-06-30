@@ -102,8 +102,6 @@ export async function saveVariantsForListing(listingId, formVariants) {
       listing_id: listingId,
       name: v.name,
       asin: v.asin || null,
-      profit_regular: v.profit_regular !== '' ? parseFloat(v.profit_regular) : null,
-      profit_deal:    v.profit_deal    !== '' ? parseFloat(v.profit_deal)    : null,
       sort_order: i,
       is_active: true,
     }).eq('id', v.id)
@@ -119,8 +117,6 @@ export async function saveVariantsForListing(listingId, formVariants) {
         listing_id: listingId,
         name: v.name,
         asin: v.asin || null,
-        profit_regular: v.profit_regular !== '' ? parseFloat(v.profit_regular) : null,
-        profit_deal:    v.profit_deal    !== '' ? parseFloat(v.profit_deal)    : null,
         sort_order: i,
         is_active: true,
       }])

@@ -1,10 +1,10 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { motion } from 'framer-motion'
-import { format } from 'date-fns'
+import { format, parseISO, addDays } from 'date-fns'
 import { de } from 'date-fns/locale'
 import { Copy, Check } from 'lucide-react'
 import toast from 'react-hot-toast'
-import { getCurrentKW, getCurrentYear, getKWDateRange, getActiveVariant, copyToClipboard, formatCurrency } from '@/lib/utils'
+import { getToday, getActiveVariant, copyToClipboard } from '@/lib/utils'
 import { useListings } from '@/hooks/useListings'
 import { useAllVariants } from '@/hooks/useVariants'
 import { useDealStatus } from '@/hooks/useDealStatus'
@@ -13,7 +13,6 @@ import SkeletonLoader from '@/components/ui/SkeletonLoader'
 
 function CopyButton({ text }) {
   const [copied, setCopied] = useState(false)
-
   const handleCopy = async (e) => {
     e.stopPropagation()
     const ok = await copyToClipboard(text)
@@ -23,7 +22,6 @@ function CopyButton({ text }) {
       setTimeout(() => setCopied(false), 2000)
     }
   }
-
   return (
     <button
       onClick={handleCopy}
@@ -43,7 +41,6 @@ function CopyButton({ text }) {
 function DealCard({ listing, active, status, onToggleAds, dim = false }) {
   const asin = typeof active === 'object' ? active.asin : listing.main_asin
   const variantName = typeof active === 'object' ? active.name : 'Aktiv'
-  const profitDeal = typeof active === 'object' ? active.profit_deal : null
 
   return (
     <motion.div
@@ -62,7 +59,7 @@ function DealCard({ listing, active, status, onToggleAds, dim = false }) {
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{
             fontSize: 13, fontWeight: 600, color: 'var(--text-primary)',
-            overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap'
+            overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
           }}>
             {listing.name}
           </div>
@@ -70,11 +67,6 @@ function DealCard({ listing, active, status, onToggleAds, dim = false }) {
             {variantName}
           </div>
         </div>
-        {profitDeal != null && (
-          <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--green)', whiteSpace: 'nowrap' }}>
-            {formatCurrency(profitDeal)}
-          </div>
-        )}
       </div>
 
       {asin && (
@@ -113,40 +105,41 @@ function DealCard({ listing, active, status, onToggleAds, dim = false }) {
 }
 
 export default function WilliamView() {
-  const kw   = getCurrentKW()
-  const year = getCurrentYear()
-  const nextKW   = kw >= 52 ? 1 : kw + 1
-  const nextYear = kw >= 52 ? year + 1 : year
-  const { start, end }         = getKWDateRange(kw, year)
-  const { start: nextStart }   = getKWDateRange(nextKW, nextYear)
-  const { start: nextEnd }     = getKWDateRange(nextKW, nextYear)
+  const today    = getToday()
+  const tomorrow = format(addDays(new Date(), 1), 'yyyy-MM-dd')
+
+  const todayLabel    = format(parseISO(today), 'd. MMMM yyyy', { locale: de })
+  const tomorrowLabel = format(parseISO(tomorrow), 'd. MMMM', { locale: de })
 
   const { listings, loading: listingsLoading } = useListings()
   const listingIds = listings.map(l => l.id)
   const { variantsByListing } = useAllVariants(listingIds)
-  const { dealStatus, loading: statusLoading, toggleAdsActive } = useDealStatus(kw, year)
+  const { dealStatus, loading: statusLoading, toggleAdsActive } = useDealStatus(today)
 
   const loading = listingsLoading || statusLoading
 
-  const thisWeekActive = listings
-    .map(l => {
-      const active = getActiveVariant(l, variantsByListing[l.id] || [], kw, year)
-      return active && active !== 'pause' ? { listing: l, active } : null
-    })
-    .filter(Boolean)
+  const todayActive = useMemo(() =>
+    listings
+      .map(l => {
+        const active = getActiveVariant(l, variantsByListing[l.id] || [], today)
+        return active && active !== 'pause' ? { listing: l, active } : null
+      })
+      .filter(Boolean)
+  , [listings, variantsByListing, today])
 
-  const nextWeekActive = listings
-    .map(l => {
-      const active = getActiveVariant(l, variantsByListing[l.id] || [], nextKW, nextYear)
-      return active && active !== 'pause' ? { listing: l, active } : null
-    })
-    .filter(Boolean)
+  const tomorrowActive = useMemo(() =>
+    listings
+      .map(l => {
+        const active = getActiveVariant(l, variantsByListing[l.id] || [], tomorrow)
+        return active && active !== 'pause' ? { listing: l, active } : null
+      })
+      .filter(Boolean)
+  , [listings, variantsByListing, tomorrow])
 
   const adsActive = dealStatus.filter(s => s.ads_active).length
-  const total     = thisWeekActive.length
+  const total     = todayActive.length
   const allDone   = total > 0 && adsActive === total
 
-  // Toast when all ads are set
   useEffect(() => {
     if (allDone) {
       toast.success('William ist informiert 🎯', { duration: 4000 })
@@ -158,16 +151,12 @@ export default function WilliamView() {
   return (
     <div>
       {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: -10 }}
-        animate={{ opacity: 1, y: 0 }}
-        style={{ marginBottom: 28 }}
-      >
+      <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} style={{ marginBottom: 28 }}>
         <h1 style={{ fontFamily: 'Georgia, serif', fontSize: 28, fontWeight: 700, margin: 0 }}>
-          Ads Briefing · KW {kw}
+          Ads Briefing
         </h1>
         <p style={{ fontSize: 14, color: 'var(--text-secondary)', margin: '6px 0 0' }}>
-          {format(start, 'd. MMMM', { locale: de })} – {format(end, 'd. MMMM yyyy', { locale: de })}
+          {todayLabel}
         </p>
       </motion.div>
 
@@ -208,22 +197,21 @@ export default function WilliamView() {
 
       {/* Two columns */}
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24 }}>
-        {/* Diese Woche */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.15 }}
-        >
+        {/* Heute */}
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}>
           <div style={{ marginBottom: 14 }}>
-            <h2 style={{ fontFamily: 'Playfair Display', fontSize: 12, fontWeight: 700, color: 'var(--green)', textTransform: 'uppercase', letterSpacing: '0.08em', margin: 0 }}>
-              Diese Woche — Jetzt schalten
+            <h2 style={{
+              fontFamily: 'Playfair Display', fontSize: 12, fontWeight: 700,
+              color: 'var(--green)', textTransform: 'uppercase', letterSpacing: '0.08em', margin: 0,
+            }}>
+              Heute — Jetzt schalten
             </h2>
           </div>
           {loading ? (
             <SkeletonLoader count={4} height={100} gap={10} />
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-              {thisWeekActive.map(({ listing, active }) => (
+              {todayActive.map(({ listing, active }) => (
                 <DealCard
                   key={listing.id}
                   listing={listing}
@@ -232,29 +220,28 @@ export default function WilliamView() {
                   onToggleAds={toggleAdsActive}
                 />
               ))}
-              {thisWeekActive.length === 0 && (
-                <p style={{ color: 'var(--text-muted)', fontSize: 13 }}>Keine aktiven Deals diese Woche</p>
+              {todayActive.length === 0 && (
+                <p style={{ color: 'var(--text-muted)', fontSize: 13 }}>Keine aktiven Deals heute</p>
               )}
             </div>
           )}
         </motion.div>
 
-        {/* Nächste Woche */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.25 }}
-        >
+        {/* Morgen */}
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }}>
           <div style={{ marginBottom: 14 }}>
-            <h2 style={{ fontFamily: 'Playfair Display', fontSize: 12, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em', margin: 0 }}>
-              Nächste Woche — Vorbereiten (KW {nextKW})
+            <h2 style={{
+              fontFamily: 'Playfair Display', fontSize: 12, fontWeight: 700,
+              color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em', margin: 0,
+            }}>
+              Morgen — Vorbereiten ({tomorrowLabel})
             </h2>
           </div>
           {loading ? (
             <SkeletonLoader count={4} height={100} gap={10} />
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-              {nextWeekActive.map(({ listing, active }) => (
+              {tomorrowActive.map(({ listing, active }) => (
                 <DealCard
                   key={listing.id}
                   listing={listing}
@@ -264,8 +251,8 @@ export default function WilliamView() {
                   dim
                 />
               ))}
-              {nextWeekActive.length === 0 && (
-                <p style={{ color: 'var(--text-muted)', fontSize: 13 }}>Keine geplanten Deals</p>
+              {tomorrowActive.length === 0 && (
+                <p style={{ color: 'var(--text-muted)', fontSize: 13 }}>Keine geplanten Deals morgen</p>
               )}
             </div>
           )}

@@ -3,9 +3,10 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { NavLink } from 'react-router-dom'
 import {
   LayoutDashboard, Package, CalendarDays, CheckSquare,
-  Megaphone, TrendingUp, ChevronLeft
+  Megaphone, ChevronLeft
 } from 'lucide-react'
-import { getCurrentKW, getCurrentYear } from '@/lib/utils'
+import { format } from 'date-fns'
+import { de } from 'date-fns/locale'
 import albatrosLogo from '@/assets/brands/albatros.png'
 
 const navItems = [
@@ -14,12 +15,10 @@ const navItems = [
   { to: '/calendar',   icon: CalendarDays,    label: 'Kalender' },
   { to: '/submission', icon: CheckSquare,     label: 'Einreichung' },
   { to: '/william',    icon: Megaphone,       label: 'William' },
-  { to: '/profit',     icon: TrendingUp,      label: 'Gewinn' },
 ]
 
 export default function Sidebar({ collapsed, onToggle }) {
-  const kw   = getCurrentKW()
-  const year = getCurrentYear()
+  const todayLabel = format(new Date(), 'd. MMM yyyy', { locale: de })
   const [hoveredItem, setHoveredItem] = useState(null)
 
   return (
@@ -163,7 +162,7 @@ export default function Sidebar({ collapsed, onToggle }) {
                 whiteSpace: 'nowrap',
               }}
             >
-              KW {kw} · {year}
+              {todayLabel}
             </motion.div>
           )}
         </AnimatePresence>

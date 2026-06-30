@@ -9,7 +9,6 @@ import Listings from '@/pages/Listings'
 import Calendar from '@/pages/Calendar'
 import Submission from '@/pages/Submission'
 import WilliamView from '@/pages/WilliamView'
-import Profit from '@/pages/Profit'
 import albatrosLogo from '@/assets/brands/albatros.png'
 
 const pageVariants = {
@@ -28,7 +27,6 @@ function AnimatedRoutes() {
         <Route path="/calendar"   element={<motion.div key="/calendar" variants={pageVariants} initial="initial" animate="animate" exit="exit"><Calendar /></motion.div>} />
         <Route path="/submission" element={<motion.div key="/submission" variants={pageVariants} initial="initial" animate="animate" exit="exit"><Submission /></motion.div>} />
         <Route path="/william"    element={<motion.div key="/william" variants={pageVariants} initial="initial" animate="animate" exit="exit"><WilliamView /></motion.div>} />
-        <Route path="/profit"     element={<motion.div key="/profit" variants={pageVariants} initial="initial" animate="animate" exit="exit"><Profit /></motion.div>} />
       </Routes>
     </AnimatePresence>
   )

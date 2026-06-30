@@ -1,5 +1,4 @@
 import { useLocation } from 'react-router-dom'
-import { getCurrentKW, getCurrentYear, getKWDateRange } from '@/lib/utils'
 import { format } from 'date-fns'
 import { de } from 'date-fns/locale'
 
@@ -9,15 +8,11 @@ const PAGE_NAMES = {
   '/calendar':   'Kalender',
   '/submission': 'Einreichung',
   '/william':    'William',
-  '/profit':     'Gewinn',
 }
 
 export default function TopBar() {
   const location = useLocation()
-  const kw   = getCurrentKW()
-  const year = getCurrentYear()
-  const { start, end } = getKWDateRange(kw, year)
-
+  const today = new Date()
   const pageName = PAGE_NAMES[location.pathname] || 'Deal Manager'
 
   return (
@@ -44,20 +39,7 @@ export default function TopBar() {
 
       <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
         <span style={{ fontSize: 12, color: '#9090A8' }}>
-          {format(start, 'd. MMMM', { locale: de })} – {format(end, 'd. MMMM yyyy', { locale: de })}
-        </span>
-        <span style={{ width: 1, height: 14, background: '#D8D8E2' }} />
-        <span style={{
-          fontSize: 11,
-          fontWeight: 700,
-          color: '#C41E3A',
-          background: 'rgba(196,30,58,0.08)',
-          padding: '3px 9px',
-          borderRadius: 20,
-          border: '1px solid rgba(196,30,58,0.15)',
-          letterSpacing: '0.04em',
-        }}>
-          KW {kw}
+          {format(today, 'EEEE, d. MMMM yyyy', { locale: de })}
         </span>
       </div>
     </div>

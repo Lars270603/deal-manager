@@ -1,14 +1,11 @@
 import { useState, useEffect, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { format } from 'date-fns'
+import { format, parseISO, addDays } from 'date-fns'
 import { de } from 'date-fns/locale'
 import { Copy, Check, ChevronDown, ChevronRight } from 'lucide-react'
 import toast from 'react-hot-toast'
 import confetti from 'canvas-confetti'
-import {
-  getCurrentKW, getCurrentYear, getKWDateRange,
-  getActiveVariant, copyToClipboard
-} from '@/lib/utils'
+import { getToday, getActiveVariant, copyToClipboard } from '@/lib/utils'
 import { useListings } from '@/hooks/useListings'
 import { useAllVariants } from '@/hooks/useVariants'
 import { useDealStatus, fetchHistoricStatus } from '@/hooks/useDealStatus'
@@ -70,31 +67,27 @@ function SubmitButton({ submitted, onClick, loading }) {
   )
 }
 
-// Past 8 weeks for history
-function getPastWeeks(n = 8) {
-  const weeks = []
-  const kw   = getCurrentKW()
-  const year = getCurrentYear()
+function getPastDays(n = 14) {
+  const days = []
+  const today = new Date()
   for (let i = 1; i <= n; i++) {
-    let w = kw - i
-    let y = year
-    if (w <= 0) { w += 52; y -= 1 }
-    weeks.push({ kw: w, year: y })
+    days.push(format(addDays(today, -i), 'yyyy-MM-dd'))
   }
-  return weeks
+  return days
 }
 
-function HistoryAccordion({ week, listings, variantsByListing, statusByListing }) {
+function HistoryAccordion({ date, listings, variantsByListing, statusByListing }) {
   const [open, setOpen] = useState(false)
-  const { start, end } = getKWDateRange(week.kw, week.year)
 
   const activeEntries = listings
     .map(l => {
-      const active = getActiveVariant(l, variantsByListing[l.id] || [], week.kw, week.year)
+      const active = getActiveVariant(l, variantsByListing[l.id] || [], date)
       const status = statusByListing[l.id]
       return active && active !== 'pause' ? { listing: l, active, status } : null
     })
     .filter(Boolean)
+
+  if (activeEntries.length === 0) return null
 
   const submitted = activeEntries.filter(e => e.status?.submitted).length
   const pct = activeEntries.length > 0 ? Math.round((submitted / activeEntries.length) * 100) : 0
@@ -111,9 +104,11 @@ function HistoryAccordion({ week, listings, variantsByListing, statusByListing }
         }}
       >
         {open ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
-        <span style={{ fontFamily: 'Playfair Display', fontWeight: 700, fontSize: 14 }}>KW {week.kw} · {week.year}</span>
+        <span style={{ fontFamily: 'Playfair Display', fontWeight: 700, fontSize: 14 }}>
+          {format(parseISO(date), 'd. MMMM yyyy', { locale: de })}
+        </span>
         <span style={{ fontSize: 12, color: 'var(--text-secondary)' }}>
-          {format(start, 'd. MMM', { locale: de })} – {format(end, 'd. MMM', { locale: de })}
+          {format(parseISO(date), 'EEEE', { locale: de })}
         </span>
         <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 10 }}>
           <div style={{ height: 4, width: 80, background: 'var(--bg-overlay)', borderRadius: 2, overflow: 'hidden' }}>
@@ -171,32 +166,30 @@ export default function Submission() {
   const [historyLoaded, setHistoryLoaded] = useState(false)
   const [hoveredRow, setHoveredRow] = useState(null)
 
-  const kw   = getCurrentKW()
-  const year = getCurrentYear()
-  const { start, end } = getKWDateRange(kw, year)
+  const today = getToday()
+  const todayLabel = format(parseISO(today), 'd. MMMM yyyy', { locale: de })
 
   const { listings, loading: listingsLoading } = useListings()
   const listingIds = listings.map(l => l.id)
   const { variantsByListing, loading: variantsLoading } = useAllVariants(listingIds)
-  const { dealStatus, loading: statusLoading, toggleSubmitted } = useDealStatus(kw, year)
+  const { dealStatus, loading: statusLoading, toggleSubmitted } = useDealStatus(today)
 
   const loading = listingsLoading || variantsLoading || statusLoading
 
-  const activeEntries = useMemo(() => {
-    return listings
+  const activeEntries = useMemo(() =>
+    listings
       .map(l => {
-        const active = getActiveVariant(l, variantsByListing[l.id] || [], kw, year)
+        const active = getActiveVariant(l, variantsByListing[l.id] || [], today)
         return active && active !== 'pause' ? { listing: l, active } : null
       })
       .filter(Boolean)
-  }, [listings, variantsByListing, kw, year])
+  , [listings, variantsByListing, today])
 
   const submittedCount = dealStatus.filter(s => s.submitted).length
   const total = activeEntries.length
   const pct = total > 0 ? Math.round((submittedCount / total) * 100) : 0
   const allSubmitted = total > 0 && submittedCount === total
 
-  // Confetti when all submitted
   useEffect(() => {
     if (allSubmitted) {
       confetti({
@@ -208,12 +201,10 @@ export default function Submission() {
     }
   }, [allSubmitted])
 
-  // Load history when tab opens
   useEffect(() => {
     if (activeTab === 'history' && !historyLoaded && listings.length > 0) {
-      const past = getPastWeeks(8)
+      const past = getPastDays(14)
       fetchHistoricStatus(past).then(data => {
-        // data = { 'kw_year': [statusRecords] }
         setHistoryData(data)
         setHistoryLoaded(true)
       })
@@ -230,12 +221,10 @@ export default function Submission() {
     }
   }
 
-  const pastWeeks = useMemo(() => getPastWeeks(8), [])
+  const pastDays = useMemo(() => getPastDays(14), [])
 
-  // Build statusByListing from historyData for each week
-  const getStatusByListing = (kw, year) => {
-    const key = `${kw}_${year}`
-    const records = historyData[key] || []
+  const getStatusByListing = (date) => {
+    const records = historyData[date] || []
     const map = {}
     records.forEach(r => { map[r.listing_id] = r })
     return map
@@ -264,11 +253,11 @@ export default function Submission() {
         <div>
           <h1 style={{ fontFamily: 'Playfair Display', fontSize: 28, fontWeight: 800, margin: 0 }}>Einreichung</h1>
           <p style={{ fontSize: 13, color: 'var(--text-secondary)', margin: '4px 0 0' }}>
-            KW {kw} · {format(start, 'd. MMMM', { locale: de })} – {format(end, 'd. MMMM yyyy', { locale: de })}
+            {todayLabel}
           </p>
         </div>
         <div style={{ display: 'flex', background: 'var(--bg-elevated)', border: '1px solid var(--border-subtle)', borderRadius: 10, padding: 4, gap: 2 }}>
-          <button style={tabStyle('current')} onClick={() => setActiveTab('current')}>Diese Woche</button>
+          <button style={tabStyle('current')} onClick={() => setActiveTab('current')}>Heute</button>
           <button style={tabStyle('history')} onClick={() => setActiveTab('history')}>Historie</button>
         </div>
       </motion.div>
@@ -305,11 +294,7 @@ export default function Submission() {
                 <motion.div
                   animate={{ width: `${pct}%` }}
                   transition={{ duration: 0.5, ease: 'easeOut' }}
-                  style={{
-                    height: '100%',
-                    background: allSubmitted ? 'var(--green)' : 'var(--accent)',
-                    borderRadius: 3,
-                  }}
+                  style={{ height: '100%', background: allSubmitted ? 'var(--green)' : 'var(--accent)', borderRadius: 3 }}
                 />
               </div>
             </div>
@@ -335,14 +320,13 @@ export default function Submission() {
                     <tr><td colSpan={5} style={{ padding: 24 }}><SkeletonLoader count={6} height={40} gap={4} /></td></tr>
                   ) : activeEntries.length === 0 ? (
                     <tr><td colSpan={5} style={{ padding: 32, textAlign: 'center', color: 'var(--text-muted)', fontSize: 14 }}>
-                      Keine aktiven Deals diese Woche
+                      Keine aktiven Deals heute
                     </td></tr>
                   ) : activeEntries.map(({ listing, active }, rowIndex) => {
                     const asin = typeof active === 'object' ? active.asin : listing.main_asin
                     const variantId = typeof active === 'object' ? active.id : null
                     const status = dealStatus.find(s => s.listing_id === listing.id)
                     const isSubmitted = status?.submitted || false
-
                     return (
                       <tr
                         key={listing.id}
@@ -395,13 +379,13 @@ export default function Submission() {
             transition={{ duration: 0.2 }}
           >
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-              {pastWeeks.map(week => (
+              {pastDays.map(date => (
                 <HistoryAccordion
-                  key={`${week.kw}-${week.year}`}
-                  week={week}
+                  key={date}
+                  date={date}
                   listings={listings}
                   variantsByListing={variantsByListing}
-                  statusByListing={getStatusByListing(week.kw, week.year)}
+                  statusByListing={getStatusByListing(date)}
                 />
               ))}
             </div>

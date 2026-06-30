@@ -1,71 +1,31 @@
 import React, { useState, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { format } from 'date-fns'
+import { format, parseISO } from 'date-fns'
 import { de } from 'date-fns/locale'
 import { Check } from 'lucide-react'
 import toast from 'react-hot-toast'
-import {
-  getCurrentKW, getCurrentYear,
-  getNextNWeeks, getKWDateRange, getActiveVariant, formatCurrency
-} from '@/lib/utils'
+import { getToday, getNextNDays, getActiveVariant } from '@/lib/utils'
 import { BRANDS, BRAND_ORDER } from '@/lib/brands'
 import { useListings } from '@/hooks/useListings'
 import { useAllVariants } from '@/hooks/useVariants'
-import { useMultiWeekDealStatus } from '@/hooks/useDealStatus'
+import { useMultiDayDealStatus } from '@/hooks/useDealStatus'
 import BrandLogo from '@/components/ui/BrandLogo'
 import SkeletonLoader from '@/components/ui/SkeletonLoader'
 
-// ─── Tooltip ────────────────────────────────────────────────────────────────
-function Tooltip({ asin, profitDeal }) {
-  if (!asin && !profitDeal) return null
-  return (
-    <div style={{
-      position: 'absolute',
-      bottom: 'calc(100% + 6px)',
-      left: '50%',
-      transform: 'translateX(-50%)',
-      background: 'var(--bg-overlay)',
-      border: '1px solid var(--border-default)',
-      borderRadius: 8,
-      padding: '8px 12px',
-      whiteSpace: 'nowrap',
-      zIndex: 200,
-      pointerEvents: 'none',
-      fontSize: 12,
-      boxShadow: '0 8px 24px rgba(0,0,0,0.4)',
-    }}>
-      {asin && (
-        <div style={{ fontFamily: 'monospace', color: 'var(--text-primary)', fontWeight: 600 }}>{asin}</div>
-      )}
-      {profitDeal != null && (
-        <div style={{ color: 'var(--green)', marginTop: asin ? 3 : 0 }}>
-          Deal: {formatCurrency(profitDeal)}
-        </div>
-      )}
-    </div>
-  )
-}
-
 // ─── Calendar Cell ───────────────────────────────────────────────────────────
-function CalCell({ listing, week, active, status, onToggle, isCurrentKW }) {
+function CalCell({ listing, dateStr, active, status, onToggle, isToday }) {
   const [hovered, setHovered] = useState(false)
 
   const isVariantObj = active !== null && typeof active === 'object'
   const isActive = isVariantObj || active === 'aktiv'
-  const variantName = isVariantObj ? active.name : active === 'aktiv' ? '✓ Aktiv' : null
-  const asin = isVariantObj ? active.asin : listing.main_asin
-  const profitDeal = isVariantObj ? active.profit_deal : null
-
+  const variantName = isVariantObj ? active.name : active === 'aktiv' ? '✓' : null
   const brandColor = BRANDS[listing.brand]?.color || '#22C55E'
-  const cellBg = isActive
-    ? `${brandColor}26`
-    : '#F5F5F7'
 
   const handleToggle = (e) => {
     e.stopPropagation()
     if (!isActive) return
     const variantId = isVariantObj ? active.id : null
-    onToggle(listing.id, variantId, week.kw, week.year, 'submitted')
+    onToggle(listing.id, variantId, dateStr, 'submitted')
   }
 
   return (
@@ -74,45 +34,70 @@ function CalCell({ listing, week, active, status, onToggle, isCurrentKW }) {
       onMouseLeave={() => setHovered(false)}
       style={{
         position: 'relative',
-        width: 90,
-        minWidth: 90,
-        height: 42,
-        padding: '4px 6px',
-        background: isCurrentKW
-          ? (isActive ? `${brandColor}26` : 'rgba(196,30,58,0.02)')
-          : cellBg,
+        width: 58,
+        minWidth: 58,
+        height: 40,
+        padding: '3px 4px',
+        background: isToday
+          ? (isActive ? `${brandColor}22` : 'rgba(196,30,58,0.02)')
+          : isActive ? `${brandColor}18` : '#F5F5F7',
         borderRight: '1px solid var(--border-subtle)',
         borderBottom: '1px solid var(--border-subtle)',
         verticalAlign: 'middle',
         cursor: isActive ? 'pointer' : 'default',
-        transition: 'background 0.15s',
+        transition: 'background 0.12s',
       }}
       onClick={handleToggle}
     >
       {isActive ? (
-        <div style={{ fontSize: 11, color: 'var(--green)', fontWeight: 600, lineHeight: 1.3, overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis', maxWidth: '100%' }}>
+        <div style={{
+          fontSize: 10, color: 'var(--green)', fontWeight: 700,
+          lineHeight: 1.2, overflow: 'hidden', whiteSpace: 'nowrap',
+          textOverflow: 'ellipsis', maxWidth: '100%',
+        }}>
           {variantName}
         </div>
       ) : (
-        <div style={{ fontSize: 13, color: 'var(--text-muted)', textAlign: 'center' }}>–</div>
+        <div style={{ fontSize: 11, color: 'var(--text-muted)', textAlign: 'center' }}>–</div>
       )}
 
-      {/* Submitted indicator */}
       {isActive && status?.submitted && (
         <div style={{
-          position: 'absolute', bottom: 3, right: 3,
-          width: 14, height: 14,
+          position: 'absolute', bottom: 2, right: 2,
+          width: 12, height: 12,
           background: 'var(--green)',
           borderRadius: '50%',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
         }}>
-          <Check size={8} style={{ color: '#000' }} />
+          <Check size={7} style={{ color: '#000' }} />
         </div>
       )}
 
-      {/* Tooltip */}
       {hovered && isActive && (
-        <Tooltip asin={asin} profitDeal={profitDeal} />
+        <div style={{
+          position: 'absolute',
+          bottom: 'calc(100% + 6px)',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          background: 'var(--bg-overlay)',
+          border: '1px solid var(--border-default)',
+          borderRadius: 8,
+          padding: '6px 10px',
+          whiteSpace: 'nowrap',
+          zIndex: 200,
+          pointerEvents: 'none',
+          fontSize: 11,
+          boxShadow: '0 8px 24px rgba(0,0,0,0.4)',
+        }}>
+          <div style={{ fontWeight: 600, color: 'var(--text-primary)' }}>
+            {isVariantObj ? active.name : 'Aktiv'}
+          </div>
+          {isVariantObj && active.asin && (
+            <div style={{ fontFamily: 'monospace', color: 'var(--text-secondary)', marginTop: 2 }}>
+              {active.asin}
+            </div>
+          )}
+        </div>
       )}
     </td>
   )
@@ -122,14 +107,13 @@ function CalCell({ listing, week, active, status, onToggle, isCurrentKW }) {
 export default function Calendar() {
   const [brandFilter, setBrandFilter] = useState(null)
 
-  const kw   = getCurrentKW()
-  const year = getCurrentYear()
-  const weeks = useMemo(() => getNextNWeeks(12), [])
+  const today = useMemo(() => getToday(), [])
+  const days  = useMemo(() => getNextNDays(30), [])
 
   const { listings, loading: listingsLoading } = useListings()
   const listingIds = listings.map(l => l.id)
   const { variantsByListing, loading: variantsLoading } = useAllVariants(listingIds)
-  const { statusMap, loading: statusLoading, toggleCell } = useMultiWeekDealStatus(weeks)
+  const { statusMap, loading: statusLoading, toggleCell } = useMultiDayDealStatus(days)
 
   const loading = listingsLoading || variantsLoading
 
@@ -147,12 +131,10 @@ export default function Calendar() {
     return g
   }, [filtered])
 
-  const brandKeys = BRAND_ORDER.filter(b =>
-    listings.some(l => l.brand === b)
-  )
+  const brandKeys = BRAND_ORDER.filter(b => listings.some(l => l.brand === b))
 
-  const handleToggle = async (listingId, variantId, cellKw, cellYear, field) => {
-    await toggleCell(listingId, variantId, cellKw, cellYear, field)
+  const handleToggle = async (listingId, variantId, dateStr, field) => {
+    await toggleCell(listingId, variantId, dateStr, field)
     toast.success('Status aktualisiert', { duration: 1500 })
   }
 
@@ -168,7 +150,6 @@ export default function Calendar() {
           Rotationskalender
         </motion.h1>
 
-        {/* Brand filter */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -215,9 +196,9 @@ export default function Calendar() {
       {/* Legend */}
       <div style={{ display: 'flex', gap: 16, marginBottom: 16, flexWrap: 'wrap' }}>
         {[
-          { bg: 'rgba(22,163,74,0.08)', border: 'rgba(22,163,74,0.2)', color: 'var(--green)', label: 'Aktiv' },
-          { bg: '#F5F5F7', border: 'var(--border-subtle)', color: 'var(--text-muted)', label: 'Pause' },
-          { bg: 'rgba(196,30,58,0.08)', border: 'rgba(196,30,58,0.2)', color: 'var(--accent)', label: 'Aktuelle KW' },
+          { bg: 'rgba(22,163,74,0.08)', border: 'rgba(22,163,74,0.2)', label: 'Aktiv' },
+          { bg: '#F5F5F7', border: 'var(--border-subtle)', label: 'Pause' },
+          { bg: 'rgba(196,30,58,0.08)', border: 'rgba(196,30,58,0.2)', label: 'Heute' },
         ].map(item => (
           <div key={item.label} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
             <div style={{ width: 20, height: 12, background: item.bg, border: `1px solid ${item.border}`, borderRadius: 3 }} />
@@ -226,7 +207,7 @@ export default function Calendar() {
         ))}
         <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
           <div style={{ width: 14, height: 14, background: 'var(--green)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <Check size={8} style={{ color: '#000' }} />
+            <Check size={7} style={{ color: '#000' }} />
           </div>
           <span style={{ fontSize: 12, color: 'var(--text-secondary)' }}>Eingereicht (klickbar)</span>
         </div>
@@ -246,10 +227,8 @@ export default function Calendar() {
       >
         <div style={{ overflowX: 'auto', overflowY: 'auto', maxHeight: 'calc(100vh - 280px)' }}>
           <table style={{ borderCollapse: 'collapse', tableLayout: 'fixed' }}>
-            {/* Column header */}
             <thead style={{ position: 'sticky', top: 0, zIndex: 10 }}>
               <tr>
-                {/* Listing name col */}
                 <th style={{
                   position: 'sticky', left: 0, zIndex: 20,
                   width: 220, minWidth: 220,
@@ -264,36 +243,38 @@ export default function Calendar() {
                 }}>
                   Listing
                 </th>
-                {/* Week columns */}
                 <AnimatePresence>
-                  {weeks.map((w, i) => {
-                    const isCurrentKW = w.kw === kw && w.year === year
-                    const { start } = getKWDateRange(w.kw, w.year)
+                  {days.map((dateStr, i) => {
+                    const isT = dateStr === today
+                    const d = parseISO(dateStr)
                     return (
                       <motion.th
-                        key={`${w.kw}-${w.year}`}
+                        key={dateStr}
                         initial={{ opacity: 0, x: 20 }}
                         animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: i * 0.03, duration: 0.25 }}
+                        transition={{ delay: i * 0.01, duration: 0.2 }}
                         style={{
-                          width: 90, minWidth: 90,
-                          background: isCurrentKW ? 'rgba(196,30,58,0.08)' : 'var(--bg-surface)',
+                          width: 58, minWidth: 58,
+                          background: isT ? 'rgba(196,30,58,0.08)' : 'var(--bg-surface)',
                           borderRight: '1px solid var(--border-subtle)',
                           borderBottom: '1px solid var(--border-default)',
-                          borderTop: isCurrentKW ? '2px solid var(--accent)' : '2px solid transparent',
-                          padding: '8px 6px 6px',
+                          borderTop: isT ? '2px solid var(--accent)' : '2px solid transparent',
+                          padding: '6px 4px 4px',
                           textAlign: 'center',
                           whiteSpace: 'nowrap',
                         }}
                       >
                         <div style={{
-                          fontSize: 12, fontWeight: 700,
-                          color: isCurrentKW ? 'var(--accent)' : 'var(--text-primary)',
+                          fontSize: 11, fontWeight: 700,
+                          color: isT ? 'var(--accent)' : 'var(--text-primary)',
                         }}>
-                          KW {w.kw}
+                          {format(d, 'd', { locale: de })}
                         </div>
-                        <div style={{ fontSize: 10, color: 'var(--text-muted)', marginTop: 2 }}>
-                          {format(start, 'd. MMM', { locale: de })}
+                        <div style={{ fontSize: 9, color: isT ? 'var(--accent)' : 'var(--text-muted)', marginTop: 1, textTransform: 'uppercase', letterSpacing: '0.03em' }}>
+                          {format(d, 'MMM', { locale: de })}
+                        </div>
+                        <div style={{ fontSize: 9, color: 'var(--text-muted)', marginTop: 1 }}>
+                          {format(d, 'EEE', { locale: de })}
                         </div>
                       </motion.th>
                     )
@@ -305,8 +286,8 @@ export default function Calendar() {
             <tbody>
               {loading ? (
                 <tr>
-                  <td colSpan={weeks.length + 1} style={{ padding: 24 }}>
-                    <SkeletonLoader count={8} height={42} gap={4} />
+                  <td colSpan={days.length + 1} style={{ padding: 24 }}>
+                    <SkeletonLoader count={8} height={40} gap={4} />
                   </td>
                 </tr>
               ) : (
@@ -314,28 +295,20 @@ export default function Calendar() {
                   .filter(brand => grouped[brand])
                   .map(brand => (
                     <React.Fragment key={brand}>
-                      {/* Brand group row */}
                       <tr>
                         <td
-                          colSpan={weeks.length + 1}
+                          colSpan={days.length + 1}
                           style={{
                             position: 'sticky', left: 0,
                             background: `${BRANDS[brand].color}10`,
                             borderTop: `1px solid ${BRANDS[brand].color}30`,
                             borderBottom: `1px solid ${BRANDS[brand].color}30`,
-                            padding: '8px 14px',
+                            padding: '7px 14px',
                           }}
                         >
                           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                            <img
-                              src={BRANDS[brand].logo}
-                              alt={BRANDS[brand].label}
-                              style={{ width: 20, height: 20, objectFit: 'contain' }}
-                            />
-                            <span style={{
-                              fontFamily: 'Playfair Display', fontSize: 13, fontWeight: 700,
-                              color: BRANDS[brand].color,
-                            }}>
+                            <img src={BRANDS[brand].logo} alt={BRANDS[brand].label} style={{ width: 18, height: 18, objectFit: 'contain' }} />
+                            <span style={{ fontFamily: 'Playfair Display', fontSize: 12, fontWeight: 700, color: BRANDS[brand].color }}>
                               {BRANDS[brand].label}
                             </span>
                             <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>
@@ -345,10 +318,8 @@ export default function Calendar() {
                         </td>
                       </tr>
 
-                      {/* Listing rows */}
                       {grouped[brand].map(listing => (
                         <tr key={listing.id}>
-                          {/* Sticky listing name cell */}
                           <td
                             style={{
                               position: 'sticky', left: 0, zIndex: 5,
@@ -357,12 +328,12 @@ export default function Calendar() {
                               borderRight: '1px solid var(--border-default)',
                               borderBottom: '1px solid var(--border-subtle)',
                               padding: '0 14px',
-                              height: 42,
+                              height: 40,
                               verticalAlign: 'middle',
                             }}
                           >
                             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                              <BrandLogo brand={listing.brand} size={18} />
+                              <BrandLogo brand={listing.brand} size={16} />
                               <span style={{
                                 fontSize: 12, fontWeight: 500,
                                 color: 'var(--text-primary)',
@@ -374,23 +345,20 @@ export default function Calendar() {
                             </div>
                           </td>
 
-                          {/* Week cells */}
-                          {weeks.map(w => {
-                            const isCurrentKW = w.kw === kw && w.year === year
+                          {days.map(dateStr => {
+                            const isT = dateStr === today
                             const variants = variantsByListing[listing.id] || []
-                            const active = getActiveVariant(listing, variants, w.kw, w.year)
-                            const statusKey = `${listing.id}_${w.kw}_${w.year}`
-                            const status = statusMap[statusKey] || null
-
+                            const active = getActiveVariant(listing, variants, dateStr)
+                            const status = statusMap[`${listing.id}_${dateStr}`] || null
                             return (
                               <CalCell
-                                key={`${listing.id}-${w.kw}-${w.year}`}
+                                key={`${listing.id}-${dateStr}`}
                                 listing={listing}
-                                week={w}
+                                dateStr={dateStr}
                                 active={active}
                                 status={status}
                                 onToggle={handleToggle}
-                                isCurrentKW={isCurrentKW}
+                                isToday={isT}
                               />
                             )
                           })}

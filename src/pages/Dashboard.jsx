@@ -1,11 +1,8 @@
 import { useState, useMemo } from 'react'
 import { motion } from 'framer-motion'
-import { format } from 'date-fns'
+import { format, parseISO, startOfISOWeek, addWeeks } from 'date-fns'
 import { de } from 'date-fns/locale'
-import {
-  getCurrentKW, getCurrentYear, getKWDateRange,
-  getActiveVariant, getNextNWeeks
-} from '@/lib/utils'
+import { getToday, getActiveVariant, formatDateLabel } from '@/lib/utils'
 import { BRANDS } from '@/lib/brands'
 import { useListings } from '@/hooks/useListings'
 import { useAllVariants } from '@/hooks/useVariants'
@@ -53,25 +50,18 @@ function StatCard({ label, value, color, borderColor, loading }) {
   )
 }
 
-// ─── Diese Woche Row ─────────────────────────────────────────────────────────
-function WeekRow({ listing, active }) {
+// ─── Heute aktiv Row ─────────────────────────────────────────────────────────
+function TodayRow({ listing, active }) {
   const brand = BRANDS[listing.brand]
   const variantName = typeof active === 'object' ? active.name : 'Aktiv'
-
   return (
     <div style={{
       display: 'flex', alignItems: 'center', gap: 10,
       padding: '8px 0',
       borderBottom: '1px solid #E8E8EE',
     }}>
-      <div style={{
-        width: 8, height: 8, borderRadius: '50%',
-        background: brand.color, flexShrink: 0,
-      }} />
-      <span style={{
-        flex: 1, fontSize: 13, color: '#0A0A14',
-        overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
-      }}>
+      <div style={{ width: 8, height: 8, borderRadius: '50%', background: brand.color, flexShrink: 0 }} />
+      <span style={{ flex: 1, fontSize: 13, color: '#0A0A14', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
         {listing.name}
       </span>
       <span style={{
@@ -86,16 +76,16 @@ function WeekRow({ listing, active }) {
   )
 }
 
-// ─── 4-Week Calendar Preview ─────────────────────────────────────────────────
-function CalendarPreview({ weeks, listings, variantsByListing, kw, year, loading }) {
+// ─── 4-Wochen-Vorschau ────────────────────────────────────────────────────────
+function CalendarPreview({ weekDates, listings, variantsByListing, loading }) {
   const relevant = useMemo(() =>
     listings.filter(l =>
-      weeks.some(w => {
-        const a = getActiveVariant(l, variantsByListing[l.id] || [], w.kw, w.year)
+      weekDates.some(d => {
+        const a = getActiveVariant(l, variantsByListing[l.id] || [], d)
         return a && a !== 'pause'
       })
     ).slice(0, 10)
-  , [listings, variantsByListing, weeks])
+  , [listings, variantsByListing, weekDates])
 
   return (
     <div style={{
@@ -113,26 +103,24 @@ function CalendarPreview({ weeks, listings, variantsByListing, kw, year, loading
 
       {loading ? <SkeletonLoader count={4} height={22} gap={4} /> : (
         <>
-          {/* Week header */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr repeat(4, 46px)', gap: 3, marginBottom: 5 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr repeat(4, 52px)', gap: 3, marginBottom: 5 }}>
             <div />
-            {weeks.map(w => (
-              <div key={`h-${w.kw}`} style={{
+            {weekDates.map(d => (
+              <div key={d} style={{
                 textAlign: 'center', fontSize: 10, fontWeight: 700,
-                color: w.kw === kw && w.year === year ? '#C41E3A' : '#9090A8',
-                letterSpacing: '0.03em',
+                color: d === getToday() ? '#C41E3A' : '#9090A8',
+                letterSpacing: '0.02em',
               }}>
-                KW {w.kw}
+                {format(parseISO(d), 'd. MMM', { locale: de })}
               </div>
             ))}
           </div>
 
-          {/* Listing rows */}
           {relevant.map(l => {
             const brand = BRANDS[l.brand]
             return (
               <div key={l.id} style={{
-                display: 'grid', gridTemplateColumns: '1fr repeat(4, 46px)',
+                display: 'grid', gridTemplateColumns: '1fr repeat(4, 52px)',
                 gap: 3, marginBottom: 3, alignItems: 'center',
               }}>
                 <div style={{
@@ -146,11 +134,11 @@ function CalendarPreview({ weeks, listings, variantsByListing, kw, year, loading
                     {l.name}
                   </span>
                 </div>
-                {weeks.map(w => {
-                  const active = getActiveVariant(l, variantsByListing[l.id] || [], w.kw, w.year)
+                {weekDates.map(d => {
+                  const active = getActiveVariant(l, variantsByListing[l.id] || [], d)
                   const isActive = active && active !== 'pause'
                   return (
-                    <div key={w.kw} style={{
+                    <div key={d} style={{
                       height: 22, borderRadius: 3,
                       background: isActive ? `${brand.color}1A` : '#F0F0F5',
                       display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -181,9 +169,9 @@ function CalendarPreview({ weeks, listings, variantsByListing, kw, year, loading
 }
 
 // ─── William Briefing ────────────────────────────────────────────────────────
-function WilliamBriefing({ kw, thisWeekActive, dealStatus, loading }) {
+function WilliamBriefing({ todayLabel, todayActive, dealStatus, loading }) {
   const adsActive = dealStatus.filter(s => s.ads_active).length
-  const total = thisWeekActive.length
+  const total = todayActive.length
   const pct = total > 0 ? Math.round((adsActive / total) * 100) : 0
 
   return (
@@ -198,7 +186,7 @@ function WilliamBriefing({ kw, thisWeekActive, dealStatus, loading }) {
           color: '#0A0A14', margin: 0,
           textTransform: 'uppercase', letterSpacing: '0.06em',
         }}>
-          William — KW {kw}
+          William · {todayLabel}
         </h3>
         <span style={{
           fontSize: 11, fontWeight: 600, color: '#16A34A',
@@ -212,11 +200,10 @@ function WilliamBriefing({ kw, thisWeekActive, dealStatus, loading }) {
 
       {loading ? <SkeletonLoader count={3} height={26} gap={4} /> : (
         <div>
-          {thisWeekActive.slice(0, 8).map(({ listing, active }) => {
+          {todayActive.slice(0, 8).map(({ listing, active }) => {
             const asin = typeof active === 'object' ? active.asin : listing.main_asin
             const status = dealStatus.find(s => s.listing_id === listing.id)
             const done = status?.ads_active || false
-
             return (
               <div key={listing.id} style={{
                 display: 'flex', alignItems: 'center', gap: 8,
@@ -229,9 +216,7 @@ function WilliamBriefing({ kw, thisWeekActive, dealStatus, loading }) {
                   background: done ? '#16A34A' : 'transparent',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                 }}>
-                  {done && (
-                    <span style={{ fontSize: 9, color: '#fff', fontWeight: 800, lineHeight: 1 }}>✓</span>
-                  )}
+                  {done && <span style={{ fontSize: 9, color: '#fff', fontWeight: 800, lineHeight: 1 }}>✓</span>}
                 </div>
                 <span style={{
                   flex: 1, fontSize: 12,
@@ -249,14 +234,12 @@ function WilliamBriefing({ kw, thisWeekActive, dealStatus, loading }) {
               </div>
             )
           })}
-
           {total === 0 && (
-            <p style={{ fontSize: 12, color: '#9090A8', padding: '6px 0' }}>Keine aktiven Deals</p>
+            <p style={{ fontSize: 12, color: '#9090A8', padding: '6px 0' }}>Keine aktiven Deals heute</p>
           )}
         </div>
       )}
 
-      {/* Progress bar */}
       <div style={{ marginTop: 10, height: 3, background: '#E8E8EE', borderRadius: 2, overflow: 'hidden' }}>
         <div style={{
           height: '100%', width: `${pct}%`,
@@ -269,18 +252,19 @@ function WilliamBriefing({ kw, thisWeekActive, dealStatus, loading }) {
 
 // ─── Main Page ────────────────────────────────────────────────────────────────
 export default function Dashboard() {
-  const kw   = getCurrentKW()
-  const year = getCurrentYear()
-  const nextKW   = kw >= 52 ? 1 : kw + 1
-  const nextYear = kw >= 52 ? year + 1 : year
+  const today = getToday()
+  const todayLabel = format(parseISO(today), 'd. MMMM yyyy', { locale: de })
 
-  const { start, end } = getKWDateRange(kw, year)
-  const calWeeks = useMemo(() => getNextNWeeks(4), [])
+  // Montag der aktuellen + nächster 3 Wochen als Vorschau-Ankerpunkte
+  const weekDates = useMemo(() => {
+    const monday = startOfISOWeek(new Date())
+    return [0, 1, 2, 3].map(i => format(addWeeks(monday, i), 'yyyy-MM-dd'))
+  }, [])
 
   const { listings, loading: listingsLoading } = useListings()
   const listingIds = listings.map(l => l.id)
   const { variantsByListing, loading: variantsLoading } = useAllVariants(listingIds)
-  const { dealStatus, loading: statusLoading } = useDealStatus(kw, year)
+  const { dealStatus, loading: statusLoading } = useDealStatus(today)
 
   const [albatrosClicks, setAlbatrosClicks] = useState(0)
   const [albatrosFlying, setAlbatrosFlying] = useState(false)
@@ -295,26 +279,24 @@ export default function Dashboard() {
     }
   }
 
-  const thisWeek = listings
-    .map(l => ({ listing: l, active: getActiveVariant(l, variantsByListing[l.id] || [], kw, year) }))
+  const todayActive = listings
+    .map(l => ({ listing: l, active: getActiveVariant(l, variantsByListing[l.id] || [], today) }))
     .filter(({ active }) => active !== null && active !== 'pause')
 
   const submitted      = dealStatus.filter(s => s.submitted).length
-  const stillToSend    = Math.max(0, thisWeek.length - submitted)
+  const stillToSend    = Math.max(0, todayActive.length - submitted)
   const pendingWilliam = dealStatus.filter(s => s.submitted && !s.ads_active).length
-
   const loading = listingsLoading || variantsLoading
 
   const stats = [
-    { label: 'Aktive Listings',   value: listings.length, color: '#0A0A14', borderColor: '#C41E3A', loading: listingsLoading },
-    { label: 'Deals diese Woche', value: thisWeek.length, color: '#16A34A', borderColor: '#16A34A', loading: listingsLoading },
-    { label: 'Einzureichen',      value: stillToSend,     color: '#D97706', borderColor: '#D97706', loading: statusLoading },
-    { label: 'William offen',     value: pendingWilliam,  color: '#1D6FD8', borderColor: '#1D6FD8', loading: statusLoading },
+    { label: 'Aktive Listings',   value: listings.length,   color: '#0A0A14', borderColor: '#C41E3A', loading: listingsLoading },
+    { label: 'Deals heute',       value: todayActive.length, color: '#16A34A', borderColor: '#16A34A', loading: listingsLoading },
+    { label: 'Einzureichen',      value: stillToSend,        color: '#D97706', borderColor: '#D97706', loading: statusLoading },
+    { label: 'William offen',     value: pendingWilliam,     color: '#1D6FD8', borderColor: '#1D6FD8', loading: statusLoading },
   ]
 
   return (
     <div>
-      {/* Easter Egg */}
       {albatrosFlying && (
         <motion.div
           initial={{ x: '-15vw', y: '25vh', rotate: 10 }}
@@ -336,11 +318,10 @@ export default function Dashboard() {
             {getGreeting()}
           </h1>
           <p style={{ fontSize: 13, color: '#9090A8', margin: '8px 0 0', lineHeight: 1.6 }}>
-            KW {kw} · {format(start, 'd. MMMM', { locale: de })} – {format(end, 'd. MMMM yyyy', { locale: de })}
-            {!listingsLoading && ` · ${thisWeek.length} Deals aktiv`}
+            {todayLabel}
+            {!listingsLoading && ` · ${todayActive.length} Deals aktiv`}
           </p>
         </motion.div>
-
         <motion.div
           initial={{ opacity: 0, rotate: -15, scale: 0.9 }}
           animate={{ opacity: 1, rotate: -10, scale: 1 }}
@@ -370,7 +351,7 @@ export default function Dashboard() {
         transition={{ delay: 0.16 }}
         style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 18 }}
       >
-        {/* Left: Diese Woche */}
+        {/* Left: Heute aktiv */}
         <div style={{
           background: '#FFFFFF', border: '1px solid #E8E8EE',
           borderRadius: 10, padding: '16px 18px',
@@ -381,15 +362,15 @@ export default function Dashboard() {
             color: '#0A0A14', margin: '0 0 10px',
             textTransform: 'uppercase', letterSpacing: '0.06em',
           }}>
-            Diese Woche — KW {kw}
+            Heute aktiv — {format(parseISO(today), 'd. MMM', { locale: de })}
           </h3>
           {listingsLoading ? (
             <SkeletonLoader count={5} height={36} gap={4} />
-          ) : thisWeek.length === 0 ? (
-            <p style={{ color: '#9090A8', fontSize: 13 }}>Keine aktiven Deals diese Woche</p>
+          ) : todayActive.length === 0 ? (
+            <p style={{ color: '#9090A8', fontSize: 13 }}>Keine aktiven Deals heute</p>
           ) : (
-            thisWeek.map(({ listing, active }) => (
-              <WeekRow key={listing.id} listing={listing} active={active} />
+            todayActive.map(({ listing, active }) => (
+              <TodayRow key={listing.id} listing={listing} active={active} />
             ))
           )}
         </div>
@@ -397,16 +378,14 @@ export default function Dashboard() {
         {/* Right: Calendar + William stacked */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
           <CalendarPreview
-            weeks={calWeeks}
+            weekDates={weekDates}
             listings={listings}
             variantsByListing={variantsByListing}
-            kw={kw}
-            year={year}
             loading={loading}
           />
           <WilliamBriefing
-            kw={kw}
-            thisWeekActive={thisWeek}
+            todayLabel={format(parseISO(today), 'd. MMM', { locale: de })}
+            todayActive={todayActive}
             dealStatus={dealStatus}
             loading={statusLoading}
           />
